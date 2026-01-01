@@ -95,7 +95,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       mediaSize: 'medium',
       rotation: 0,
       scale: 1,
-      suggestion: { enabled: false, type: 'text', text: '' },
+      suggestion: { enabled: false, type: 'text', text: 'New suggestion' },
       suggestions: [],
     };
     // Try to center the tooltip inside the canvas if available

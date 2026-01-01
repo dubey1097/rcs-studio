@@ -44,7 +44,7 @@
     <ng-container
       *ngFor="let s of (tooltip.suggestions && tooltip.suggestions.length ? tooltip.suggestions : (tooltip.suggestion ? [tooltip.suggestion] : [])); let idx = index">
       <div class="suggestion"
-        *ngIf="(tooltip.suggestions && tooltip.suggestions.length) || tooltip.suggestion?.enabled">
+        *ngIf="tooltip.suggestions && tooltip.suggestions.length && tooltip.suggestion?.enabled">
         <div [attr.contenteditable]="isEditing('suggestion', idx) ? 'true' : null"
           (dblclick)="onElementDblClick('suggestion',$event, idx)" (blur)="onInlineEdit('suggestion',$event, idx)">{{
           s?.text }}</div>

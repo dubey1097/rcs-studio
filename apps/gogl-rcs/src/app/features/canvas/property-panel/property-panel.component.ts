@@ -78,7 +78,7 @@ export class PropertyPanelComponent implements OnChanges {
     // ensure at least one suggestion exists when suggestions are enabled
     const enabled = t.suggestion?.enabled || (t.suggestions && t.suggestions.length > 0) || false;
     if (enabled && this.suggestions.length === 0) {
-      this.suggestions.push({ enabled: true, type: 'text', text: 'Suggestion 1' });
+      this.suggestions.push({ enabled: true, type: 'text', text: 'New suggestion' });
     }
 
     this.form.valueChanges.subscribe((v) => {
@@ -104,7 +104,7 @@ export class PropertyPanelComponent implements OnChanges {
     const se = this.form.controls['suggestionEnabled'];
     se.valueChanges.subscribe((val: boolean) => {
       if (val && this.suggestions.length === 0) {
-        this.suggestions.push({ enabled: true, type: 'text', text: 'Suggestion 1' });
+        this.suggestions.push({ enabled: true, type: 'text', text: 'New suggestion' });
         this.emitSuggestionsChange();
       }
     });
