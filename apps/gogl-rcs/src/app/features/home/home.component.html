@@ -1,0 +1,91 @@
+<div class="home-container">
+  <div class="header-section">
+    <div>
+      <h2>Welcome to GOGL RCS</h2>
+      <p class="subtitle">A modern Angular application built with enterprise-grade architecture</p>
+    </div>
+    <div class="user-section">
+      <div *ngIf="user$ | async as user" class="user-info">
+        <span class="user-name">{{ getUserDisplayName(user) }}</span>
+        <lib-button type="secondary" size="small" (clicked)="logout()">Logout</lib-button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="features">
+    <h3>Application Features:</h3>
+    <ul>
+      <li>✅ Monorepo structure with Nx</li>
+      <li>✅ NgRx state management</li>
+      <li>✅ Shared UI component library</li>
+      <li>✅ Error handling framework</li>
+      <li>✅ Logging service</li>
+      <li>✅ Environment configurations</li>
+      <li>✅ Code quality tools (ESLint, Prettier)</li>
+      <li>✅ Git hooks with Husky</li>
+      <li>✅ Docker Compose for local development</li>
+      <li>✅ Comprehensive documentation</li>
+    </ul>
+  </div>
+
+  <div class="demo-section">
+    <h3>UI Components Demo</h3>
+    
+    <div class="button-demo">
+      <h4>Buttons</h4>
+      <div class="button-group">
+        <lib-button type="primary" (clicked)="openModal()">Primary Button</lib-button>
+        <lib-button type="secondary">Secondary Button</lib-button>
+        <lib-button type="success">Success Button</lib-button>
+        <lib-button type="danger">Danger Button</lib-button>
+        <lib-button type="warning">Warning Button</lib-button>
+        <lib-button type="ghost">Ghost Button</lib-button>
+      </div>
+    </div>
+
+    <div class="form-demo">
+      <h4>Form Fields</h4>
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+        <lib-form-field
+          label="Name"
+          type="text"
+          formControlName="name"
+          placeholder="Enter your name"
+          [required]="true">
+        </lib-form-field>
+        
+        <lib-form-field
+          label="Email"
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [required]="true"
+          hint="We'll never share your email">
+        </lib-form-field>
+
+        <div class="form-actions">
+          <lib-button type="primary" [disabled]="formGroup.invalid" (clicked)="onSubmit()">
+            Submit
+          </lib-button>
+          <lib-button type="secondary" (clicked)="formGroup.reset()">
+            Reset
+          </lib-button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Demo -->
+  <lib-modal
+    [show]="showModal"
+    [title]="'Welcome Modal'"
+    [size]="'medium'"
+    (closed)="closeModal()">
+    <p>This is a demo modal component. You can use it to display important information, confirmations, or forms.</p>
+    <p>Click outside the modal or press Escape to close it.</p>
+    <div footer>
+      <lib-button type="primary" (clicked)="closeModal()">Got it!</lib-button>
+    </div>
+  </lib-modal>
+</div>
+

@@ -1,0 +1,32 @@
+<div class="form-field" [class.form-field--error]="hasError()" [class.form-field--disabled]="disabled">
+  <label *ngIf="label" class="form-field__label" [for]="label">
+    {{ label }}
+    <span *ngIf="required" class="form-field__required" aria-label="required">*</span>
+  </label>
+  <div class="form-field__input-wrapper">
+    <input
+      [id]="label"
+      class="form-field__input"
+      [type]="type"
+      [placeholder]="placeholder"
+      [value]="value"
+      [required]="required"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [attr.autocomplete]="autocomplete"
+      [attr.aria-label]="ariaLabel || label"
+      [attr.aria-required]="required"
+      [attr.aria-invalid]="hasError()"
+      [attr.aria-describedby]="hasError() ? label + '-error' : (hint ? label + '-hint' : null)"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+    />
+  </div>
+  <div *ngIf="hint && !hasError()" class="form-field__hint" [id]="label + '-hint'">
+    {{ hint }}
+  </div>
+  <div *ngIf="hasError()" class="form-field__error" [id]="label + '-error'" role="alert">
+    {{ getErrorMessage() }}
+  </div>
+</div>
+

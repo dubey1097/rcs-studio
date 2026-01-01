@@ -1,0 +1,54 @@
+<div class="tooltip" #hostEl [class.selected]="selected" (click)="onClick($event)" (dblclick)="onDblClick($event)"
+  [style.left.px]="tooltip.x" [style.top.px]="tooltip.y"
+  [style.transform]="'rotate(' + (tooltip.rotation || 0) + 'deg) scale(' + (tooltip.scale || 1) + ')'">
+  <div class="badge"><span class="badge-icon">💬</span>
+    <h4>{{ tooltip.messageName }}</h4>
+  </div>
+  <!-- <button class="remove" (click)="onRemove($event)">✕</button> -->
+  <div class="handle handle_left" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">
+  </div>
+  <div class="handle handle_right" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">
+  </div>
+  <div class="handle handle_bottom" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)"
+    title="Drag"></div>
+
+  <div class="body">
+    <div class="media" *ngIf="tooltip.mediaEnabled" [ngClass]="[tooltip.mediaSize, tooltip.mediaOrientation]"
+      (drop)="onMediaDrop($event)" (dragover)="$event.preventDefault()">
+      <ng-container *ngIf="tooltip.mediaUrl; else placeholder">
+        <video *ngIf="isVideo(tooltip.mediaUrl)" [src]="tooltip.mediaUrl" controls></video>
+        <object *ngIf="isPdf(tooltip.mediaUrl)" [data]="tooltip.mediaUrl" type="application/pdf" width="100%"
+          height="100%">PDF preview not available</object>
+        <img *ngIf="isImage(tooltip.mediaUrl)" [src]="tooltip.mediaUrl" />
+        <button class="edit-media" title="Edit media" (click)="fileInputHidden.click()">📷</button>
+      </ng-container>
+      <ng-template #placeholder>
+        <div class="media-placeholder" (click)="fileInputHidden.click()">
+          <div class="icon">📤</div>
+          <div class="text">Drag and drop or click to upload image</div>
+          <div class="sub">image, Video, GIF or PDF</div>
+        </div>
+      </ng-template>
+      <!-- hidden file input used for both upload and edit -->
+      <input #fileInputHidden type="file" (change)="onMediaSelect($event)" accept="image/*,video/*,.gif,.pdf"
+        style="display:none" />
+    </div>
+
+    <div *ngIf="tooltip.titleEnabled !== false" class="title"
+      [attr.contenteditable]="isEditing('title') ? 'true' : null" (dblclick)="onElementDblClick('title',$event)"
+      (blur)="onInlineEdit('title',$event)">{{ tooltip.title }}</div>
+    <div *ngIf="tooltip.textEnabled !== false" class="desc" [attr.contenteditable]="isEditing('text') ? 'true' : null"
+      (dblclick)="onElementDblClick('text',$event)" (blur)="onInlineEdit('text',$event)">{{ tooltip.text }}</div>
+
+
+    <ng-container
+      *ngFor="let s of (tooltip.suggestions && tooltip.suggestions.length ? tooltip.suggestions : (tooltip.suggestion ? [tooltip.suggestion] : [])); let idx = index">
+      <div class="suggestion"
+        *ngIf="(tooltip.suggestions && tooltip.suggestions.length) || tooltip.suggestion?.enabled">
+        <div [attr.contenteditable]="isEditing('suggestion', idx) ? 'true' : null"
+          (dblclick)="onElementDblClick('suggestion',$event, idx)" (blur)="onInlineEdit('suggestion',$event, idx)">{{
+          s?.text }}</div>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Welcome to {{ appName }}</h1>
+      <p>Sign in with your Google account to continue</p>
+    </div>
+
+    <div class="login-content">
+      <div *ngIf="error$ | async as error" class="error-message" role="alert">
+        {{ error }}
+      </div>
+
+      <div class="google-sign-in-wrapper">
+        <div #googleSignInButton id="google-sign-in-button"></div>
+      </div>
+
+      <div class="login-info">
+        <p>By signing in, you agree to our Terms of Service and Privacy Policy.</p>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,218 @@
+<div *ngIf="tooltip; else noSelection" class="panel-root">
+  <div class="panel-header">
+    <h3>Properties</h3>
+    <button *ngIf="!focusedField" class="close">✕</button>
+    <div *ngIf="focusedField" style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+      <button class="close" (click)="clearFocus.emit()">← Back</button>
+    </div>
+  </div>
+
+  <!-- Full panel view (when not focusing a specific field) -->
+  <div *ngIf="!focusedField">
+    <label class="label-top">Message name</label>
+    <input type="text" class="message-name" [formControl]="form.controls['messageName']" />
+
+    <hr />
+    <div class="section-header">
+      <h4>Media <span class="info-icon" title="Upload an image, video or PDF to display inside the tooltip"></span> <span class="media-indicator" *ngIf="tooltip?.mediaUrl" [title]="mediaType(tooltip?.mediaUrl)">{{ mediaIcon(tooltip?.mediaUrl) }}</span></h4>
+      <label class="switch right"><input type="checkbox" [formControl]="form.controls['mediaEnabled']" /><span class="slider"></span></label>
+    </div>
+
+    <div *ngIf="form.controls['mediaEnabled'].value" class="media-controls">
+      <div class="row">
+        <label>Orientation</label>
+        <select [formControl]="form.controls['mediaOrientation']">
+          <option value="vertical">Vertical</option>
+          <option value="horizontal">Horizontal</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>Media size</label>
+        <select [formControl]="form.controls['mediaSize']">
+          <option value="tall">Tall</option>
+          <option value="medium">Medium</option>
+          <option value="short">Short</option>
+        </select>
+      </div>
+    </div>
+
+    <hr />
+    <div class="row toggle-row">
+      <span class="section-label">Title <span class="info-icon" title="Optional bold title that appears above the message"></span></span>
+      <label class="switch right"><input type="checkbox" [formControl]="form.controls['titleEnabled']" /><span class="slider"></span></label>
+    </div>
+    <input type="text" [formControl]="form.controls['title']" maxlength="80" />
+    <div class="counter">{{ form.controls['title'].value?.length || 0 }} / 80</div>
+
+    <div class="row toggle-row">
+      <span class="section-label">Text <span class="info-icon" title="Main message body shown below the title"></span></span>
+      <label class="switch right"><input type="checkbox" [formControl]="form.controls['textEnabled']" /><span class="slider"></span></label>
+    </div>
+    <textarea [formControl]="form.controls['text']" maxlength="300" style="height: 120px;"></textarea>
+    <div class="counter">{{ form.controls['text'].value?.length || 0 }} / 300</div>
+
+    <hr />
+    <div class="section-header">
+      <h4>Suggestions inside <span class="info-icon" title="Add quick reply suggestions or actions that the user can tap"></span></h4>
+      <label class="switch right"><input type="checkbox" [formControl]="form.controls['suggestionEnabled']"/><span class="slider"></span></label>
+    </div>
+    <div *ngIf="form.controls['suggestionEnabled'].value" class="suggestion-controls">
+      <div class="suggestions-list">
+        <div *ngFor="let s of suggestions; let i = index" class="suggestion-item">
+          <div class="suggestion-header">
+            <strong>Suggestion {{ i + 1 }}</strong>
+            <button class="remove-suggestion" title="Remove suggestion" (click)="removeSuggestion(i)">✕</button>
+          </div>
+          <div class="suggestion-controls">
+            <div class="row">
+              <label style="width:80px">Type</label>
+              <select [value]="s.type" (change)="updateSuggestion(i,'type',$any($event.target).value)">
+                <option value="text">Text</option>
+                <option value="action">Action</option>
+              </select>
+            </div>
+            <div class="row" style="margin-top:8px; align-items:flex-start">
+              <label style="width:80px">Text</label>
+              <input type="text" [value]="s.text" (input)="updateSuggestion(i,'text',$any($event.target).value)" style="flex:1" />
+            </div>
+            <div *ngIf="s.type === 'action'" style="margin-top:8px">
+              <div class="row">
+                <label style="width:80px">Action</label>
+                <select [value]="s.actionType" (change)="updateSuggestion(i,'actionType',$any($event.target).value)">
+                  <option value="open_url">Open URL</option>
+                  <option value="dial">Dial</option>
+                  <option value="create_calendar_event">Create Calendar event</option>
+                  <option value="share_location">Share location</option>
+                  <option value="view_location">View location</option>
+                </select>
+              </div>
+
+              <div class="row" *ngIf="s.actionType === 'open_url'" style="margin-top:8px">
+                <label style="width:80px">URL</label>
+                <input type="text" [value]="s.payload?.url || ''" (input)="updateSuggestion(i,'payload.url',$any($event.target).value)" style="flex:1" />
+              </div>
+
+              <div class="row" *ngIf="s.actionType === 'dial'" style="margin-top:8px">
+                <label style="width:80px">Phone</label>
+                <input type="text" [value]="s.payload?.phone || ''" (input)="updateSuggestion(i,'payload.phone',$any($event.target).value)" style="flex:1" />
+              </div>
+
+              <div *ngIf="s.actionType === 'create_calendar_event'" style="margin-top:8px">
+                <div class="row">
+                  <label style="width:80px">Title</label>
+                  <input type="text" [value]="s.payload?.calendarTitle || ''" (input)="updateSuggestion(i,'payload.calendarTitle',$any($event.target).value)" style="flex:1" />
+                </div>
+                <div class="row" style="margin-top:8px">
+                  <label style="width:80px">Start</label>
+                  <input type="datetime-local" [value]="s.payload?.calendarStart || ''" (input)="updateSuggestion(i,'payload.calendarStart',$any($event.target).value)" style="flex:1" />
+                </div>
+                <div class="row" style="margin-top:8px">
+                  <label style="width:80px">End</label>
+                  <input type="datetime-local" [value]="s.payload?.calendarEnd || ''" (input)="updateSuggestion(i,'payload.calendarEnd',$any($event.target).value)" style="flex:1" />
+                </div>
+                <div class="row" style="margin-top:8px">
+                  <label style="width:80px">Location</label>
+                  <input type="text" [value]="s.payload?.calendarLocation || ''" (input)="updateSuggestion(i,'payload.calendarLocation',$any($event.target).value)" style="flex:1" />
+                </div>
+              </div>
+
+              <div *ngIf="s.actionType === 'share_location' || s.actionType === 'view_location'" style="margin-top:8px">
+                <div class="row">
+                  <label style="width:80px">Latitude</label>
+                  <input type="text" [value]="s.payload?.lat || ''" (input)="updateSuggestion(i,'payload.lat',$any($event.target).value)" />
+                  <label style="width:80px">Longitude</label>
+                  <input type="text" [value]="s.payload?.lng || ''" (input)="updateSuggestion(i,'payload.lng',$any($event.target).value)" />
+                </div>
+                <div class="row" style="margin-top:8px">
+                  <label style="width:80px">Address</label>
+                  <input type="text" [value]="s.payload?.address || ''" (input)="updateSuggestion(i,'payload.address',$any($event.target).value)" style="flex:1" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:8px">
+          <button (click)="addSuggestion()">+ Add suggestion</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Focused-field view: show only controls relevant to the focused field -->
+  <div *ngIf="focusedField">
+    <div style="margin-top:12px">
+      <ng-container [ngSwitch]="focusedField">
+        <div *ngSwitchCase="'title'">
+          <label class="label-top">Title <span class="info-icon" title="Optional bold title that appears above the message"></span></label>
+          <input type="text" [formControl]="form.controls['title']" maxlength="80" />
+          <div class="counter">{{ form.controls['title'].value?.length || 0 }} / 80</div>
+        </div>
+        <div *ngSwitchCase="'text'">
+          <label class="label-top">Text <span class="info-icon" title="Main message body shown below the title"></span></label>
+          <textarea [formControl]="form.controls['text']" maxlength="300" style="height: 120px;"></textarea>
+          <div class="counter">{{ form.controls['text'].value?.length || 0 }} / 300</div>
+        </div>
+        <div *ngSwitchCase="'subText'">
+          <label class="label-top">Sub text</label>
+          <input type="text" [formControl]="form.controls['subText']" />
+        </div>
+        <div *ngSwitchCase="'suggestion'">
+          <label class="label-top">Suggestion <span class="info-icon" title="Quick reply or action that appears below the message"></span></label>
+          <div>
+            <label>Type</label>
+            <select [formControl]="form.controls['suggestionType']">
+              <option value="text">Text</option>
+              <option value="action">Action</option>
+            </select>
+          </div>
+          <div *ngIf="form.controls['suggestionType'].value === 'action'" style="margin-top:8px">
+            <label>Action</label>
+            <select [formControl]="form.controls['suggestionAction']">
+              <option value="open_url">Open URL</option>
+              <option value="dial">Dial</option>
+              <option value="create_calendar_event">Create Calendar event</option>
+              <option value="share_location">Share location</option>
+              <option value="view_location">View location</option>
+            </select>
+          </div>
+          <label style="margin-top:8px">Text</label>
+          <input type="text" [formControl]="form.controls['suggestionText']" />
+          <!-- per-action payload fields in focused view -->
+          <div *ngIf="form.controls['suggestionType'].value === 'action'" style="margin-top:8px">
+            <div *ngIf="form.controls['suggestionAction'].value === 'open_url'">
+              <label>URL</label>
+              <input type="text" [formControl]="form.controls['suggestionUrl']" placeholder="https://example.com" />
+            </div>
+            <div *ngIf="form.controls['suggestionAction'].value === 'dial'">
+              <label>Phone number</label>
+              <input type="text" [formControl]="form.controls['suggestionPhone']" placeholder="+1234567890" />
+            </div>
+            <div *ngIf="form.controls['suggestionAction'].value === 'create_calendar_event'">
+              <label>Event title</label>
+              <input type="text" [formControl]="form.controls['suggestionCalendarTitle']" />
+              <label>Start</label>
+              <input type="datetime-local" [formControl]="form.controls['suggestionCalendarStart']" />
+              <label>End</label>
+              <input type="datetime-local" [formControl]="form.controls['suggestionCalendarEnd']" />
+              <label>Location</label>
+              <input type="text" [formControl]="form.controls['suggestionCalendarLocation']" />
+            </div>
+            <div *ngIf="form.controls['suggestionAction'].value === 'share_location' || form.controls['suggestionAction'].value === 'view_location'">
+              <label>Latitude</label>
+              <input type="text" [formControl]="form.controls['suggestionLat']" placeholder="12.345678" />
+              <label>Longitude</label>
+              <input type="text" [formControl]="form.controls['suggestionLng']" placeholder="-98.765432" />
+              <label>Address (optional)</label>
+              <input type="text" [formControl]="form.controls['suggestionAddress']" />
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #noSelection>
+  <div class="empty">No tooltip selected</div>
+</ng-template>

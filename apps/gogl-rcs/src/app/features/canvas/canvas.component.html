@@ -1,0 +1,47 @@
+<div class="canvas-shell">
+  <div class="toolbar">
+    <!-- <button (click)="addTooltip()">Add Tooltip</button> -->
+    <button (click)="saveJson()">Save JSON</button>
+    <button (click)="resetTour()" style="margin-left:8px">Reset tour</button>
+  </div>
+
+  <div class="workspace">
+    <div class="canvas" id="canvas" (click)="clearSelection()">
+      <ng-container *ngFor="let t of tooltips">
+        <app-tooltip [tooltip]="t" [selected]="selectedId === t.id" (selectTooltip)="select($event)"
+          (editField)="onEditField($event, t.id)" (update)="updateTooltip($event)"
+          (remove)="removeTooltip($event)"></app-tooltip>
+      </ng-container>
+    </div>
+
+    <div class="bottom-controls" *ngIf="selectedId">
+      <button (click)="rotateSelected(-15)" title="Rotate counter-clockwise">⟲</button>
+      <button (click)="rotateSelected(15)" title="Rotate clockwise">⟳</button>
+      <button (click)="zoomSelected(1.2)" title="Zoom in">＋</button>
+      <div class="zoom-perc">{{ getSelectedScalePercent() }}%</div>
+      <button (click)="zoomSelected(0.8)" title="Zoom out">−</button>
+      <button (click)="resetTransform()" title="Reset">Reset</button>
+    </div>
+
+    <div class="panel" *ngIf="selectedId">
+      <app-property-panel [tooltip]="selectedTooltip" [focusedField]="focusedField" (update)="updateTooltip($event)"
+        (clearFocus)="onClearFocus()"></app-property-panel>
+    </div>
+
+    <!-- In-app tour overlays (show only once) -->
+      <div class="tour-overlay" *ngIf="tourStep === 1">
+        <div class="tour-tip tour-canvas" [style.left.px]="tourTipLeft" [style.top.px]="tourTipTop">
+          <p>Start here!</p>
+        </div>
+      </div>
+
+      <div class="tour-overlay" *ngIf="tourStep === 2">
+        <div class="tour-tip tour-panel">
+          <p>You can edit message properties in this panel. Play arount with different settings to contomize your message!</p>
+          <div class="tour-actions">
+            <button (click)="skipTour()">Ok, got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

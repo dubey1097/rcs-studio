@@ -1,0 +1,111 @@
+{
+  "name": "gogl-rcs",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/gogl-rcs/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/gogl-rcs",
+        "index": "apps/gogl-rcs/src/index.html",
+        "main": "apps/gogl-rcs/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/gogl-rcs/tsconfig.app.json",
+        "assets": [
+          "apps/gogl-rcs/src/favicon.ico",
+          "apps/gogl-rcs/src/assets"
+        ],
+        "styles": ["apps/gogl-rcs/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["apps/gogl-rcs/src/styles"]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/gogl-rcs/src/environments/environment.ts",
+              "with": "apps/gogl-rcs/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
+        "staging": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            }
+          ],
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/gogl-rcs/src/environments/environment.ts",
+              "with": "apps/gogl-rcs/src/environments/environment.staging.ts"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "gogl-rcs:build:production"
+        },
+        "development": {
+          "buildTarget": "gogl-rcs:build:development"
+        },
+        "staging": {
+          "buildTarget": "gogl-rcs:build:staging"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "gogl-rcs:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/gogl-rcs/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["type:app", "scope:gogl-rcs"]
+}
+

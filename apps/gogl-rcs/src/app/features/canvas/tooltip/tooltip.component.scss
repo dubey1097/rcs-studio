@@ -1,0 +1,112 @@
+.tooltip {
+  position: absolute;
+  min-width: 220px;
+  max-width: 312px;
+  border: 2px solid #cfe3ff;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+.tooltip.selected {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+  border-color: #3f51b5;
+}
+.tooltip { transform-origin: center top; }
+.badge {
+  position: absolute;
+  top: -45px;
+  background: #f0f4ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 13px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* larger, centered icon */
+  .badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    width: 22px;
+    height: 22px;
+  }
+}
+.handle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #1976d2;
+  position: absolute;
+  // top: -6px;
+  // left: 50%;
+  transform: translateX(-50%);
+  cursor: grab;
+  z-index: 3;
+  &_left{
+    left: -10px;
+    top: 50%;
+  }
+  &_right{
+    left: calc(100% + 10px);
+    top: 50%;
+  }
+  &_bottom{
+    left: 50%;
+    top: calc(100% + 10px);
+  }
+}
+.remove {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.tooltip .body { padding: 12px; position: relative; z-index: 1; }
+.tooltip .title { font-weight: 700; margin-top: 8px; }
+.tooltip .desc { margin-top: 6px; color: #444; font-size: 13px; }
+.tooltip .subdesc { margin-top: 6px; color: #666; font-size: 12px; }
+
+.tooltip .media {
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  position: relative;
+}
+.tooltip .media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.tooltip .media.tall { height: 220px; }
+.tooltip .media.medium { height: 140px; }
+.tooltip .media.short { height: 80px; }
+
+.tooltip .media-placeholder { color: #999; font-size: 12px; margin-top: 8px; text-align:center; padding: 12px 6px; cursor: pointer; }
+.suggestion { margin-top: 8px; padding: 6px; border-radius: 4px; background: #f0f4ff; }
+.media-placeholder .icon { font-size: 28px; }
+.media-placeholder .text { font-weight:600; margin-top:6px; }
+.media-placeholder .sub { color:#888; font-size:12px; margin-top:4px; }
+
+/* Edit media camera button */
+.edit-media {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 4px 6px;
+  cursor: pointer;
+  z-index: 4;
+}
+.edit-media:hover { background: white; }
