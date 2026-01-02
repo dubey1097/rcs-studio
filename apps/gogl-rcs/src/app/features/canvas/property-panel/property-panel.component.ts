@@ -52,7 +52,7 @@ export class PropertyPanelComponent implements OnChanges {
     this.form = this.fb.group({
       messageName: [t.messageName],
       titleEnabled: [t.titleEnabled ?? true],
-      title: [t.title || 'Title 1'],
+      title: [t.title],
       textEnabled: [t.textEnabled ?? true],
       text: [t.text],
       subText: [t.subText || ''],
@@ -138,6 +138,11 @@ export class PropertyPanelComponent implements OnChanges {
       cur[parts[parts.length - 1]] = value;
     } else {
       (s as any)[key] = value;
+      // when type changes to 'action', set default actionType
+      if (key === 'type' && value === 'action' && !s.actionType) {
+        s.actionType = 'open_url';
+        if (!s.payload) s.payload = {};
+      }
     }
     this.emitSuggestionsChange();
   }
