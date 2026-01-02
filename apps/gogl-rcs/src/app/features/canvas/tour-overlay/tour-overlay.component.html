@@ -1,0 +1,15 @@
+<!-- In-app tour overlays (show only once) -->
+<div class="tour-overlay" *ngIf="tourStep === 1">
+  <div class="tour-tip tour-canvas" [style.left.px]="tourTipLeft" [style.top.px]="tourTipTop">
+    <p>Start here!</p>
+  </div>
+</div>
+
+<div class="tour-overlay" *ngIf="tourStep === 2">
+  <div class="tour-tip tour-panel">
+    <p>You can edit message properties in this panel. Play arount with different settings to contomize your message!</p>
+    <div class="tour-actions">
+      <button (click)="skipTour.emit()">Ok, got it</button>
+    </div>
+  </div>
+</div>

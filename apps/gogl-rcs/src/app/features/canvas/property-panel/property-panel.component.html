@@ -1,7 +1,7 @@
 <div *ngIf="tooltip; else noSelection" class="panel-root">
   <div class="panel-header">
     <h3>Properties</h3>
-    <button *ngIf="!focusedField" class="close">✕</button>
+    <button *ngIf="!focusedField" class="close" (click)="close.emit()">✕</button>
     <div *ngIf="focusedField" style="margin-left:auto; display:flex; gap:8px; align-items:center;">
       <button class="close" (click)="clearFocus.emit()">← Back</button>
     </div>

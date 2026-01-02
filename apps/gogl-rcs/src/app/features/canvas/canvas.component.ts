@@ -190,6 +190,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   clearSelection() {
     this.selectedId = undefined;
+    this.finishTour();
   }
 
   updateTooltip(updated: TooltipModel) {

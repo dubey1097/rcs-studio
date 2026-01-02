@@ -13,6 +13,7 @@ export class PropertyPanelComponent implements OnChanges {
   @Input() focusedField?: 'title' | 'text' | 'suggestion' | 'subText' | null;
   @Output() update = new EventEmitter<TooltipModel>();
   @Output() clearFocus = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
 
   form: FormGroup;
   suggestions: any[] = [];

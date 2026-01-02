@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TooltipComponent } from './tooltip/tooltip.component';
 import { PropertyPanelComponent } from './property-panel/property-panel.component';
+import { TourOverlayComponent } from './tour-overlay/tour-overlay.component';
+import { TransformControlsComponent } from './transform-controls/transform-controls.component';
 import { CanvasComponent } from './canvas.component';
 
 const routes: Routes = [
@@ -15,7 +17,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [CanvasComponent, TooltipComponent, PropertyPanelComponent],
+  declarations: [CanvasComponent, TooltipComponent, PropertyPanelComponent, TourOverlayComponent, TransformControlsComponent],
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule.forChild(routes)],
   exports: [CanvasComponent],
 })

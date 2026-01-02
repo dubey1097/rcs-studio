@@ -1,0 +1,8 @@
+<div class="bottom-controls" *ngIf="selectedId">
+  <button (click)="rotate.emit(-15)" title="Rotate counter-clockwise">⟲</button>
+  <button (click)="rotate.emit(15)" title="Rotate clockwise">⟳</button>
+  <button (click)="zoom.emit(1.2)" title="Zoom in">＋</button>
+  <div class="zoom-perc">{{ scalePercent }}%</div>
+  <button (click)="zoom.emit(0.8)" title="Zoom out">−</button>
+  <button (click)="reset.emit()" title="Reset">Reset</button>
+</div>

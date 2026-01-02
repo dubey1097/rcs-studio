@@ -21,30 +21,6 @@
   background: #fff;
   border-right: 1px solid #e5e5e5;
 }
-.bottom-controls {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 12px;
-  display: flex;
-  gap: 8px;
-  background: rgba(255,255,255,0.9);
-  padding: 6px 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  z-index: 50;
-}
-.bottom-controls button {
-  border: 1px solid #ddd;
-  background: white;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.bottom-controls button:hover { background:#f5f5f5; }
-.bottom-controls .zoom-perc {
-  display:flex; align-items:center; justify-content:center; min-width:48px; font-weight:600;
-}
 .panel {
   width: 360px;
   padding: 12px;
@@ -57,21 +33,3 @@
   color: #777;
   font-size: 13px;
 }
-
-/* Tour overlays */
-.tour-overlay { position: absolute; pointer-events: none; inset: 0; z-index: 1000; }
-.tour-tip { pointer-events: auto; background: #1976d2; border: 1px solid rgba(255,255,255,0.12); padding: 12px; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.18); max-width: 235px; color: white; }
-.tour-tip h4 { margin: 0 0 6px 0; color: #fff }
-.tour-tip p { margin: 0; font-size: 13px; color: #eef6ff }
-.tour-actions { display:flex; gap:8px; justify-content:flex-end }
-.tour-actions button { background: #7cbaf0; color:rgb(9, 6, 69); border:none; padding:6px 10px; border-radius:6px; cursor:pointer }
-// .tour-actions button:first-child { background: rgba(255,255,255,0.18); color:white }
-
-/* little arrow pointing right (tip sits left of the target) */
-.tour-tip::before { content: ''; position: absolute; left: 100%; top: 18px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 8px solid #1976d2; }
-
-/* Position the canvas tip to the left side (near canvas area) */
-.tour-tip.tour-canvas { position: absolute; left: 16px; top: 120px; transform: translateY(0); }
-
-/* Position the panel tip to the left side of the panel */
-.tour-tip.tour-panel { position: absolute; right: 370px; top: 20px; }
