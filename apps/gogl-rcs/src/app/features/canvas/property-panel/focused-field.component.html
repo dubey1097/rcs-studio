@@ -1,0 +1,90 @@
+<div style="margin-top:12px">
+  <ng-container [ngSwitch]="focusedField">
+    <div *ngSwitchCase="'title'">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title <mat-icon matTooltip="Optional bold title that appears above the message" class="info-icon">info</mat-icon></mat-label>
+        <input matInput [formControl]="form.controls['title']" maxlength="80" />
+        <mat-hint align="end">{{ form.controls['title'].value?.length || 0 }} / 80</mat-hint>
+      </mat-form-field>
+    </div>
+    <div *ngSwitchCase="'text'">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Text <mat-icon matTooltip="Main message body shown below the title" class="info-icon">info</mat-icon></mat-label>
+        <textarea matInput [formControl]="form.controls['text']" maxlength="300" rows="5"></textarea>
+        <mat-hint align="end">{{ form.controls['text'].value?.length || 0 }} / 300</mat-hint>
+      </mat-form-field>
+    </div>
+    <div *ngSwitchCase="'subText'">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Sub text</mat-label>
+        <input matInput [formControl]="form.controls['subText']" />
+      </mat-form-field>
+    </div>
+    <div *ngSwitchCase="'suggestion'">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Suggestion <mat-icon matTooltip="Quick reply or action that appears below the message" class="info-icon">info</mat-icon></mat-label>
+        <mat-select [formControl]="form.controls['suggestionType']">
+          <mat-option value="text">Text</mat-option>
+          <mat-option value="action">Action</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width" [hidden]="form.controls['suggestionType'].value !== 'action'">
+        <mat-label>Action</mat-label>
+        <mat-select [formControl]="form.controls['suggestionAction']">
+          <mat-option value="open_url">Open URL</mat-option>
+          <mat-option value="dial">Dial</mat-option>
+          <mat-option value="create_calendar_event">Create Calendar event</mat-option>
+          <mat-option value="share_location">Share location</mat-option>
+          <mat-option value="view_location">View location</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Text</mat-label>
+        <input matInput [formControl]="form.controls['suggestionText']" />
+      </mat-form-field>
+      <!-- per-action payload fields in focused view -->
+      <div [hidden]="form.controls['suggestionType'].value !== 'action'">
+        <mat-form-field appearance="outline" class="full-width" [hidden]="form.controls['suggestionAction'].value !== 'open_url'">
+          <mat-label>URL</mat-label>
+          <input matInput [formControl]="form.controls['suggestionUrl']" placeholder="https://example.com" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width" [hidden]="form.controls['suggestionAction'].value !== 'dial'">
+          <mat-label>Phone number</mat-label>
+          <input matInput [formControl]="form.controls['suggestionPhone']" placeholder="+1234567890" />
+        </mat-form-field>
+        <div [hidden]="form.controls['suggestionAction'].value !== 'create_calendar_event'">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Event title</mat-label>
+            <input matInput [formControl]="form.controls['suggestionCalendarTitle']" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Start</mat-label>
+            <input matInput type="datetime-local" [formControl]="form.controls['suggestionCalendarStart']" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>End</mat-label>
+            <input matInput type="datetime-local" [formControl]="form.controls['suggestionCalendarEnd']" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Location</mat-label>
+            <input matInput [formControl]="form.controls['suggestionCalendarLocation']" />
+          </mat-form-field>
+        </div>
+        <div [hidden]="!(form.controls['suggestionAction'].value === 'share_location' || form.controls['suggestionAction'].value === 'view_location')">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Latitude</mat-label>
+            <input matInput [formControl]="form.controls['suggestionLat']" placeholder="12.345678" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Longitude</mat-label>
+            <input matInput [formControl]="form.controls['suggestionLng']" placeholder="-98.765432" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address (optional)</mat-label>
+            <input matInput [formControl]="form.controls['suggestionAddress']" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

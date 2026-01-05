@@ -22,73 +22,73 @@
   outline: none;
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color, #007bff);
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
   }
 
   // Button Types
   &--primary {
-    background-color: var(--primary-color, #007bff);
+    background-color: var(--primary-color);
     color: white;
-    border-color: var(--primary-color, #007bff);
+    border-color: var(--primary-color);
 
     &:hover:not(:disabled) {
-      background-color: var(--primary-hover, #0056b3);
-      border-color: var(--primary-hover, #0056b3);
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
     }
   }
 
   &--secondary {
-    background-color: var(--secondary-color, #6c757d);
+    background-color: var(--secondary-color);
     color: white;
-    border-color: var(--secondary-color, #6c757d);
+    border-color: var(--secondary-color);
 
     &:hover:not(:disabled) {
-      background-color: var(--secondary-hover, #545b62);
-      border-color: var(--secondary-hover, #545b62);
+      background-color: var(--secondary-hover);
+      border-color: var(--secondary-hover);
     }
   }
 
   &--danger {
-    background-color: var(--danger-color, #dc3545);
+    background-color: var(--danger-color);
     color: white;
-    border-color: var(--danger-color, #dc3545);
+    border-color: var(--danger-color);
 
     &:hover:not(:disabled) {
-      background-color: var(--danger-hover, #c82333);
-      border-color: var(--danger-hover, #c82333);
+      background-color: var(--danger-hover);
+      border-color: var(--danger-hover);
     }
   }
 
   &--success {
-    background-color: var(--success-color, #28a745);
+    background-color: var(--success-color);
     color: white;
-    border-color: var(--success-color, #28a745);
+    border-color: var(--success-color);
 
     &:hover:not(:disabled) {
-      background-color: var(--success-hover, #218838);
-      border-color: var(--success-hover, #218838);
+      background-color: var(--success-hover);
+      border-color: var(--success-hover);
     }
   }
 
   &--warning {
-    background-color: var(--warning-color, #ffc107);
+    background-color: var(--warning-color);
     color: #212529;
-    border-color: var(--warning-color, #ffc107);
+    border-color: var(--warning-color);
 
     &:hover:not(:disabled) {
-      background-color: var(--warning-hover, #e0a800);
-      border-color: var(--warning-hover, #e0a800);
+      background-color: var(--warning-hover);
+      border-color: var(--warning-hover);
     }
   }
 
   &--ghost {
     background-color: transparent;
-    color: var(--primary-color, #007bff);
-    border-color: var(--primary-color, #007bff);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 
     &:hover:not(:disabled) {
-      background-color: var(--primary-color, #007bff);
+      background-color: var(--primary-color);
       color: white;
     }
   }
