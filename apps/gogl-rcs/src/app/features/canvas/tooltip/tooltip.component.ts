@@ -14,6 +14,7 @@ export class TooltipComponent implements OnInit {
   @Output() editField = new EventEmitter<string>();
   @Output() update = new EventEmitter<TooltipModel>();
   @Output() remove = new EventEmitter<string>();
+  @Output() startLink = new EventEmitter<{ id: string; offsetX?: number; offsetY?: number }>();
 
   dragging = false;
   offset = { x: 0, y: 0 };
@@ -41,7 +42,7 @@ export class TooltipComponent implements OnInit {
       this.offset.y = 0;
     }
     e.preventDefault();
-    this.selectTooltip.emit(this.tooltip.id);
+    // selection will be handled on click to avoid duplicate emits
   }
 
   onPointerDown(e: PointerEvent) {
@@ -141,6 +142,18 @@ export class TooltipComponent implements OnInit {
       }
       this.update.emit(this.tooltip);
     }
+  }
+
+  onStartLink(e: MouseEvent) {
+    e.stopPropagation();
+    // Calculate the offset from the tooltip's top-left corner to the link dot
+    const tooltipRect = this.hostEl.nativeElement.getBoundingClientRect();
+    const linkDotOffset = {
+      x: e.clientX - tooltipRect.left,
+      y: e.clientY - tooltipRect.top
+    };
+    // emit source id and offset from tooltip top-left so parent can calculate absolute position
+    this.startLink.emit({ id: this.tooltip.id, offsetX: linkDotOffset.x, offsetY: linkDotOffset.y });
   }
 
   onRemove(e: MouseEvent) {

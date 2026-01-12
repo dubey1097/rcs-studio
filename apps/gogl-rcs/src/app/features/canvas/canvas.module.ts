@@ -12,6 +12,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+// CDK Drag & Drop
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { TooltipComponent } from './tooltip/tooltip.component';
 import { PropertyPanelComponent } from './property-panel/property-panel.component';
@@ -43,6 +45,7 @@ const routes: Routes = [
     MatIconModule,
     MatSlideToggleModule,
     MatTooltipModule
+    ,DragDropModule
   ],
   exports: [CanvasComponent],
 })

@@ -1,7 +1,7 @@
-<div class="tooltip" #hostEl [class.selected]="selected" (click)="onClick($event)" (dblclick)="onDblClick($event)"
+<div class="tooltip" #hostEl [attr.data-tooltip-id]="tooltip.id" [class.selected]="selected" (click)="onClick($event)" (dblclick)="onDblClick($event)"
   [style.left.px]="tooltip.x" [style.top.px]="tooltip.y"
   [style.transform]="'rotate(' + (tooltip.rotation || 0) + 'deg) scale(' + (tooltip.scale || 1) + ')'">
-  <div class="badge"><span class="badge-icon">💬</span>
+  <div class="badge" (click)="onClick($event)"><span class="badge-icon">💬</span>
     <h4>{{ tooltip.messageName }}</h4>
   </div>
   <!-- <button class="remove" (click)="onRemove($event)">✕</button> -->
@@ -41,13 +41,16 @@
       (dblclick)="onElementDblClick('text',$event)" (blur)="onInlineEdit('text',$event)">{{ tooltip.text }}</div>
 
 
-    <ng-container
-      *ngFor="let s of (tooltip.suggestions && tooltip.suggestions.length ? tooltip.suggestions : (tooltip.suggestion ? [tooltip.suggestion] : [])); let idx = index">
-      <div class="suggestion"
-        *ngIf="tooltip.suggestions && tooltip.suggestions.length && tooltip.suggestion?.enabled">
-        <div [attr.contenteditable]="isEditing('suggestion', idx) ? 'true' : null"
-          (dblclick)="onElementDblClick('suggestion',$event, idx)" (blur)="onInlineEdit('suggestion',$event, idx)">{{
-          s?.text }}</div>
+    <ng-container *ngFor="let s of (tooltip.suggestions && tooltip.suggestions.length ? tooltip.suggestions : (tooltip.suggestion ? [tooltip.suggestion] : [])); let idx = index">
+      <div class="suggestion" *ngIf="tooltip.suggestions && tooltip.suggestions.length && tooltip.suggestion?.enabled">
+          <div class="suggestion-content">
+          <div [attr.contenteditable]="isEditing('suggestion', idx) ? 'true' : null"
+            (dblclick)="onElementDblClick('suggestion',$event, idx)" (blur)="onInlineEdit('suggestion',$event, idx)">{{ s?.text }}</div>
+          <button type="button" class="link-dot"
+            (pointerdown)="$event.stopPropagation();"
+            (mousedown)="$event.stopPropagation(); $event.preventDefault();"
+            (click)="onStartLink($event)" title="Create relation from this suggestion"></button>
+        </div>
       </div>
     </ng-container>
   </div>

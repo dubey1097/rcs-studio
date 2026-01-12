@@ -3,11 +3,13 @@
   flex-direction: column;
   height: 100%;
 }
+
 .toolbar {
   padding: 8px;
   background: #f3f3f3;
   border-bottom: 1px solid #ddd;
 }
+
 .workspace {
   display: flex;
   flex: 1 1 auto;
@@ -15,12 +17,14 @@
   /* ensure absolutely positioned overlays inside workspace are constrained to this area */
   position: relative;
 }
+
 .canvas {
   flex: 1 1 auto;
   position: relative;
   background: #fff;
   border-right: 1px solid #e5e5e5;
 }
+
 .panel {
   width: 360px;
   padding: 12px;
@@ -29,7 +33,178 @@
   flex: 0 0 360px;
   box-sizing: border-box;
 }
+
 .hint {
   color: #777;
   font-size: 13px;
+}
+
+/* Assets button & tray */
+.asset-button {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1150;
+  background: #2f6feb;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(47, 111, 235, 0.18);
+  cursor: pointer;
+}
+
+.asset-tray {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  width: 320px;
+  pointer-events: none;
+  z-index: 1200;
+  height: 100%;
+  /* keep tray visually hidden when closed by translating it down */
+}
+
+.asset-tray .tray-content {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px 8px 0 0;
+  box-shadow: none;
+  // width: 0;
+  /* collapsed by default */
+  height: 100%;
+  overflow: hidden;
+  transform-origin: bottom left;
+  transform: scale(0);
+  transition: transform 500ms cubic-bezier(.2, .9, .2, 1);
+  pointer-events: none;
+  outline: none;
+}
+
+.asset-tray.open .tray-content {
+  /* expand to fill the containing workspace height */
+  height: 100%;
+  // width: 100%;
+  overflow: hidden;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.tray-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+/* Pending asset popup menu */
+.pending-asset-menu {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  z-index: 1300;
+  min-width: 160px;
+  overflow: hidden;
+
+  .menu-item {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    text-align: left;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: #333;
+    transition: background-color 150ms ease;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+
+    &:active {
+      background-color: #e8e8e8;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #f0f0f0;
+    }
+  }
+}
+
+.tray-body {
+  padding: 12px;
+}
+
+.asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.asset-item {
+  padding: 8px 10px;
+  background: #f7fafc;
+  border: 1px dashed #e1e7ef;
+  border-radius: 6px;
+  cursor: grab;
+  user-select: none;
+}
+
+.asset-item:active {
+  cursor: grabbing;
+}
+
+/* ensure preview copies have slight elevation */
+.asset-item.preview {
+  box-shadow: 0 8px 22px rgba(22, 40, 70, 0.12);
+  background: #fff;
+}
+
+.asset-item.placeholder {
+  position: absolute;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Relations overlay styles */
+.relations-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  /* keep under tooltips so clicks on nodes work */
+  z-index: 1000;
+}
+
+.relations-overlay path {
+  pointer-events: none;
+}
+
+.relations-overlay circle.end-dot {
+  fill: #fff;
+  stroke: #2f6feb;
+  stroke-width: 3;
+  r: 6;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.tray-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
 }
