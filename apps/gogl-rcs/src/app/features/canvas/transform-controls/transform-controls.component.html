@@ -1,8 +1,21 @@
-<div class="bottom-controls" *ngIf="selectedId">
-  <button (click)="rotate.emit(-15)" title="Rotate counter-clockwise">⟲</button>
-  <button (click)="rotate.emit(15)" title="Rotate clockwise">⟳</button>
-  <button (click)="zoom.emit(1.2)" title="Zoom in">＋</button>
+<div class="bottom-controls">
+  <button (click)="rotate.emit(-15)" title="Rotate counter-clockwise" [disabled]="!selectedId">⟲</button>
+  <button (click)="rotate.emit(15)" title="Rotate clockwise" [disabled]="!selectedId">⟳</button>
+  <button (click)="zoom.emit(1.2)" title="Zoom in" [disabled]="!selectedId">＋</button>
   <div class="zoom-perc">{{ scalePercent }}%</div>
-  <button (click)="zoom.emit(0.8)" title="Zoom out">−</button>
-  <button (click)="reset.emit()" title="Reset">Reset</button>
+  <button (click)="zoom.emit(0.8)" title="Zoom out" [disabled]="!selectedId">−</button>
+  <button (click)="reset.emit()" title="Reset" [disabled]="!selectedId">Reset</button>
+  <button (click)="togglePreview()" title="Preview" class="preview-btn">👁️</button>
+</div>
+
+<div class="preview-tray" [class.open]="showPreview" role="region" [attr.aria-hidden]="!showPreview">
+  <div class="tray-content" tabindex="-1">
+    <div class="tray-header">
+      <strong>Preview</strong>
+      <button class="tray-close" (click)="closePreview()" aria-label="Close preview">×</button>
+    </div>
+    <div class="tray-body" *ngIf="selectedTooltip">
+      <app-preview [tooltip]="selectedTooltip"></app-preview>
+    </div>
+  </div>
 </div>

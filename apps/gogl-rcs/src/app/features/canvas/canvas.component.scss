@@ -32,6 +32,7 @@
   /* make panel a fixed-width flex child so it doesn't stretch or collapse unexpectedly */
   flex: 0 0 360px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .hint {
@@ -183,13 +184,19 @@
   top: 0;
   width: 100%;
   height: 100%;
-  pointer-events: auto;
+  pointer-events: none;
   /* keep under tooltips so clicks on nodes work */
   z-index: 1000;
 }
 
 .relations-overlay path {
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.relations-overlay circle {
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .relations-overlay circle.end-dot {
@@ -207,4 +214,170 @@
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
+}
+
+/* Bottom controls bar */
+.bottom-controls {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 56px;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+
+  button {
+    padding: 8px 12px;
+    background: #2f6feb;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 150ms ease;
+
+    &:hover:not(:disabled) {
+      background-color: #1e4fb8;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  .zoom-perc {
+    padding: 0 12px;
+    font-size: 14px;
+    color: #666;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .preview-btn {
+    margin-left: auto;
+  }
+}
+
+// }
+
+.preview-tray .tray-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f1f1;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.preview-tray .tray-header strong {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.preview-tray .tray-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-tray .tray-close:hover {
+  color: #333;
+}
+
+.preview-tray {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 500px;
+  max-width: 90vw;
+  max-height: 80vh;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  transition: transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  pointer-events: none;
+  user-select: none;
+}
+
+.preview-tray.open {
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.preview-tray.dragging {
+  transition: none;
+}
+
+.preview-tray .tray-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.preview-tray .tray-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f1f1;
+  background: #fafafa;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.preview-tray .tray-header strong {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.preview-tray .tray-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-tray .tray-close:hover {
+  color: #333;
+}
+
+.preview-tray .tray-body {
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  max-height: calc(70vh - 56px);
+  flex: 1;
+  padding: 12px;
 }

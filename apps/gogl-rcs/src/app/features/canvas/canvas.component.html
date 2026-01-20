@@ -6,56 +6,98 @@
   </div>
 
   <div class="workspace">
-    <div class="canvas" id="canvas" (click)="onCanvasClick($event)" (mousemove)="onCanvasMouseMove($event)" (mouseup)="onCanvasMouseUp($event)">
+    <div class="canvas" id="canvas" (click)="onCanvasClick($event)" (mousemove)="onCanvasMouseMove($event)"
+      (mouseup)="onCanvasMouseUp($event)">
       <ng-container *ngFor="let t of tooltips">
-        <app-tooltip cdkDrag cdkDragBoundary="#canvas" [tooltip]="t" [selected]="selectedId === t.id" (selectTooltip)="select($event)"
-          (startLink)="onStartLink($event)" (editField)="onEditField($event, t.id)" (update)="updateTooltip($event)"
-          (remove)="removeTooltip($event)" (cdkDragMoved)="onNodeDragMoved($event)" (cdkDragEnded)="onNodeDragEnded($event, t)"></app-tooltip>
+        <app-tooltip cdkDrag cdkDragBoundary="#canvas" [tooltip]="t" [selected]="selectedId === t.id"
+          (selectTooltip)="select($event)" (startLink)="onStartLink($event)" (editField)="onEditField($event, t.id)"
+          (update)="updateTooltip($event)" (remove)="removeTooltip($event)" (cdkDragMoved)="onNodeDragMoved($event)"
+          (cdkDragEnded)="onNodeDragEnded($event, t)"></app-tooltip>
       </ng-container>
 
       <!-- Relations overlay: existing relations and temporary link while drawing -->
-      <svg class="relations-overlay" preserveAspectRatio="none">
+      <svg class="relations-overlay" preserveAspectRatio="none" style="pointer-events: none;">
         <defs>
-          <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth">
+          <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"
+            markerUnits="strokeWidth">
             <path d="M0,0 L8,4 L0,8 Z" fill="#2f6feb" />
           </marker>
         </defs>
         <!-- Render smooth bezier paths for relations (uses component helpers) -->
         <g *ngFor="let r of relations">
-          <path [attr.d]="getRelationPath(r)" fill="none" stroke="#2f6feb" stroke-width="2" marker-end="url(#arrowhead)" />
+          <path [attr.d]="getRelationPath(r)" fill="none" stroke="#2f6feb" stroke-width="2"
+            marker-end="url(#arrowhead)" />
         </g>
         <g *ngIf="linkingSourceId && tempLinkEnd">
-          <path [attr.d]="getTempPath()" fill="none" stroke="#2f6feb" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrowhead)" />
+          <path [attr.d]="getTempPath()" fill="none" stroke="#2f6feb" stroke-width="2" stroke-dasharray="6 4"
+            marker-end="url(#arrowhead)" />
         </g>
         <!-- Pending endpoint dot + icon to open asset tray -->
         <g *ngIf="pendingLinkEnd" [attr.transform]="'translate(' + pendingLinkEnd.x + ',' + pendingLinkEnd.y + ')'">
-          <circle cx="0" cy="0" r="8" fill="white" stroke="#2f6feb" stroke-width="2" style="cursor: pointer; pointer-events: auto;" (click)="onPendingEndDotClick($event)" />
-          <text x="0" y="0" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="#2f6feb" style="cursor: pointer; pointer-events: none;">+</text>
+          <circle cx="0" cy="0" r="8" fill="white" stroke="#2f6feb" stroke-width="2"
+            style="cursor: pointer; pointer-events: auto;" (click)="onPendingEndDotClick($event)" />
+          <text x="0" y="0" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="#2f6feb"
+            style="cursor: pointer; pointer-events: none;">+</text>
         </g>
       </svg>
 
       <!-- Popup menu with asset items at pending endpoint -->
-      <div *ngIf="showPendingAssetMenu && pendingAssetMenuPos" class="pending-asset-menu" [style.left.px]="pendingAssetMenuPos.x" [style.top.px]="pendingAssetMenuPos.y">
+      <div *ngIf="showPendingAssetMenu && pendingAssetMenuPos" class="pending-asset-menu"
+        [style.left.px]="pendingAssetMenuPos.x" [style.top.px]="pendingAssetMenuPos.y">
         <button type="button" class="menu-item" (click)="onPendingAssetSelected('text')">Text message</button>
         <button type="button" class="menu-item" (click)="onPendingAssetSelected('reach')">Reach card</button>
         <button type="button" class="menu-item" (click)="onPendingAssetSelected('carousel')">Carousel</button>
         <button type="button" class="menu-item" (click)="onPendingAssetSelected('input')">User input</button>
       </div>
+
+      <!-- <app-transform-controls *ngIf="tooltips.length > 0" [selectedId]="selectedId" [selectedTooltip]="selectedTooltip" [scalePercent]="getSelectedScalePercent()" (rotate)="rotateSelected($event)" (zoom)="zoomSelected($event)" (reset)="resetTransform()"></app-transform-controls> -->
     </div>
 
-    <app-transform-controls [selectedId]="selectedId" [scalePercent]="getSelectedScalePercent()" (rotate)="rotateSelected($event)" (zoom)="zoomSelected($event)" (reset)="resetTransform()"></app-transform-controls>
+    <!-- Transform Controls: Bottom buttons and preview tray -->
+    <div class="bottom-controls" *ngIf="tooltips.length > 0">
+      <button (click)="rotateSelected(-15)" title="Rotate counter-clockwise" [disabled]="!selectedId">⟲</button>
+      <button (click)="rotateSelected(15)" title="Rotate clockwise" [disabled]="!selectedId">⟳</button>
+      <button (click)="zoomSelected(1.2)" title="Zoom in" [disabled]="!selectedId">＋</button>
+      <div class="zoom-perc">{{ getSelectedScalePercent() }}%</div>
+      <button (click)="zoomSelected(0.8)" title="Zoom out" [disabled]="!selectedId">−</button>
+      <button (click)="resetTransform()" title="Reset" [disabled]="!selectedId">Reset</button>
+      <button (click)="togglePreview()" title="Preview" [disabled]="!selectedId" class="preview-btn">👁️</button>
+    </div>
+
+
+    <div class="preview-tray" [class.open]="showPreview" role="region" [attr.aria-hidden]="!showPreview"
+      *ngIf="tooltips.length > 0"
+      [style.transform]="'translate(calc(-50% + ' + previewTrayPosition.x + 'px), calc(-50% + ' + previewTrayPosition.y + 'px)) scale(' + (showPreview ? 1 : 0) + ')'"
+      [class.dragging]="isDraggingPreviewTray"
+      (mousedown)="onPreviewTrayMouseDown($event)"
+      (mousemove)="onPreviewTrayMouseMove($event)"
+      (mouseup)="onPreviewTrayMouseUp()"
+      (mouseleave)="onPreviewTrayMouseUp()">
+      <div class="tray-content" tabindex="-1">
+        <div class="tray-header" style="cursor: grab;">
+          <strong>Preview</strong>
+          <button class="tray-close" (click)="closePreview()" aria-label="Close preview">×</button>
+        </div>
+        <div class="tray-body">
+          <app-preview></app-preview>
+        </div>
+      </div>
+    </div>
 
     <div class="panel" *ngIf="selectedId">
       <app-property-panel [tooltip]="selectedTooltip" [focusedField]="focusedField" (update)="updateTooltip($event)"
         (clearFocus)="onClearFocus()" (close)="clearSelection()"></app-property-panel>
     </div>
 
-    <app-tour-overlay [tourStep]="tourStep" [tourTipLeft]="tourTipLeft" [tourTipTop]="tourTipTop" (nextTour)="nextTour()" (skipTour)="skipTour()"></app-tour-overlay>
+    <app-tour-overlay [tourStep]="tourStep" [tourTipLeft]="tourTipLeft" [tourTipTop]="tourTipTop"
+      (nextTour)="nextTour()" (skipTour)="skipTour()"></app-tour-overlay>
 
     <!-- Asset button (bottom-left) and slide-up tray -->
-    <button class="asset-button" (click)="toggleAssetTray()" [attr.aria-expanded]="showAssetTray" aria-controls="asset-tray">Assets</button>
+    <button class="asset-button" (click)="toggleAssetTray()" [attr.aria-expanded]="showAssetTray"
+      aria-controls="asset-tray">Assets</button>
 
-    <div id="asset-tray" class="asset-tray" [class.open]="showAssetTray" role="region" [attr.aria-hidden]="!showAssetTray">
+    <div id="asset-tray" class="asset-tray" [class.open]="showAssetTray" role="region"
+      [attr.aria-hidden]="!showAssetTray">
       <div class="tray-content" tabindex="-1">
         <div class="tray-header">
           <strong>Assets</strong>
@@ -70,7 +112,8 @@
             <div class="asset-item" (mousedown)="onAssetMouseDown($event, 'reach')" (click)="onAssetClick('reach')">
               Reach card
             </div>
-            <div class="asset-item" (mousedown)="onAssetMouseDown($event, 'carousel')" (click)="onAssetClick('carousel')">
+            <div class="asset-item" (mousedown)="onAssetMouseDown($event, 'carousel')"
+              (click)="onAssetClick('carousel')">
               Carousel
             </div>
             <div class="asset-item" (mousedown)="onAssetMouseDown($event, 'input')" (click)="onAssetClick('input')">
@@ -80,5 +123,5 @@
         </div>
       </div>
     </div>
-    </div>
   </div>
+</div>

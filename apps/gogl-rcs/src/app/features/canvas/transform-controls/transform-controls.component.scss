@@ -1,24 +1,131 @@
 .bottom-controls {
-  position: absolute;
+  position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 12px;
+  bottom: 16px;
   display: flex;
   gap: 8px;
   background: rgba(255,255,255,0.9);
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  z-index: 50;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 1000;
 }
+
 .bottom-controls button {
   border: 1px solid #ddd;
   background: white;
   padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 200ms ease;
 }
-.bottom-controls button:hover { background:#f5f5f5; }
+
+.bottom-controls button:hover {
+  background: #f5f5f5;
+}
+
+.bottom-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f0f0f0;
+}
+
 .bottom-controls .zoom-perc {
-  display:flex; align-items:center; justify-content:center; min-width:48px; font-weight:600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  font-weight: 600;
+}
+
+.bottom-controls .preview-btn {
+  margin-left: 4px;
+  padding: 6px 12px;
+}
+
+/* Preview Tray Styles - Centered Modal with Highest Z-Index */
+.preview-tray {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 500px;
+  max-height: 70vh;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 500ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  justify-content: center;
+}
+
+.preview-tray .tray-content {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  outline: none;
+}
+
+.preview-tray.open {
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.preview-tray.open .tray-content {
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.preview-tray .tray-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f1f1;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.preview-tray .tray-header strong {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.preview-tray .tray-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-tray .tray-close:hover {
+  color: #333;
+}
+
+.preview-tray .tray-body {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(70vh - 56px);
+}
+
+.preview-tray .tray-close:hover {
+  color: #333;
+}
+
+.preview-tray .tray-body {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: calc(60vh - 50px);
 }

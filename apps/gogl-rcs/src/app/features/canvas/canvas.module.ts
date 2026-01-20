@@ -19,7 +19,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
 import { PropertyPanelComponent } from './property-panel/property-panel.component';
 import { FocusedFieldComponent } from './property-panel/focused-field.component';
 import { TourOverlayComponent } from './tour-overlay/tour-overlay.component';
-import { TransformControlsComponent } from './transform-controls/transform-controls.component';
+import { PreviewComponent } from '../../shared/components/preview/preview.component';
 import { CanvasComponent } from './canvas.component';
 
 const routes: Routes = [
@@ -30,7 +30,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [CanvasComponent, TooltipComponent, PropertyPanelComponent, FocusedFieldComponent, TourOverlayComponent, TransformControlsComponent],
+  declarations: [CanvasComponent, TooltipComponent, PropertyPanelComponent, FocusedFieldComponent, TourOverlayComponent, PreviewComponent],
   imports: [
     CommonModule,
     FormsModule,

@@ -8,6 +8,7 @@ import { TooltipModel } from '../tooltip.model';
 })
 export class TooltipComponent implements OnInit {
   @Input() tooltip!: TooltipModel;
+  @Input() previewMode = false;
   @Input() selected = false;
   @Output() selectTooltip = new EventEmitter<string>();
   // emitted when user double-clicks a specific element (field name)
@@ -214,9 +215,11 @@ export class TooltipComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       if (!this.tooltip) return;
-      this.tooltip.mediaUrl = reader.result as string;
-      this.tooltip.mediaEnabled = true;
-      this.update.emit(this.tooltip);
+      // Create a new object to avoid readonly property issues
+      const updatedTooltip = { ...this.tooltip };
+      updatedTooltip.mediaUrl = reader.result as string;
+      updatedTooltip.mediaEnabled = true;
+      this.update.emit(updatedTooltip);
     };
     reader.readAsDataURL(file);
   }

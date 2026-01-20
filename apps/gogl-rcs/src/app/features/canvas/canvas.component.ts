@@ -1,5 +1,8 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { TooltipModel } from './tooltip.model';
+import * as CanvasActions from '../../store/actions/canvas.actions';
+import { AppState } from '../../store';
 
 function uid(): string {
   return Math.random().toString(36).slice(2, 9);
@@ -11,6 +14,8 @@ function uid(): string {
   styleUrls: ['./canvas.component.scss'],
 })
 export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
+  constructor(private store: Store<AppState>) {}
+
   ngOnInit(): void {
     this.tourStep = 1;
     this.addTooltip();
@@ -33,6 +38,15 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   focusedField?: 'title' | 'text' | 'suggestion' | 'subText' | null;
   // in-app tour step: 1 = tooltip tip, 2 = property panel tip, null = no tour
   tourStep?: number | null = null;
+
+  // Transform controls state
+  showPreview = false;
+
+  // Preview tray drag state
+  previewTrayPosition = { x: 0, y: 0 };
+  private _previewDragStartMouse = { x: 0, y: 0 };
+  private _previewDragStartPos = { x: 0, y: 0 };
+  isDraggingPreviewTray = false;
 
   // computed position (pixels) for the canvas tour tip. Null leaves CSS fallback.
   tourTipLeft?: number | null = null;
@@ -261,6 +275,39 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateTooltip(t);
   }
 
+  togglePreview() {
+    this.showPreview = !this.showPreview;
+  }
+
+  closePreview() {
+    this.showPreview = false;
+  }
+
+  onPreviewTrayMouseDown(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.tray-close')) return;
+    
+    this.isDraggingPreviewTray = true;
+    this._previewDragStartMouse = { x: event.clientX, y: event.clientY };
+    this._previewDragStartPos = { ...this.previewTrayPosition };
+    event.preventDefault();
+  }
+
+  onPreviewTrayMouseMove(event: MouseEvent) {
+    if (!this.isDraggingPreviewTray) return;
+
+    const deltaX = event.clientX - this._previewDragStartMouse.x;
+    const deltaY = event.clientY - this._previewDragStartMouse.y;
+
+    this.previewTrayPosition = {
+      x: this._previewDragStartPos.x + deltaX,
+      y: this._previewDragStartPos.y + deltaY,
+    };
+  }
+
+  onPreviewTrayMouseUp() {
+    this.isDraggingPreviewTray = false;
+  }
+
   getSelectedScalePercent(): number {
     const t = this.selectedTooltip;
     if (!t) return 100;
@@ -287,6 +334,8 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.selectedId = id;
+    const selectedNode = this.tooltips.find((t) => t.id === id);
+    this.store.dispatch(CanvasActions.selectNode({ node: selectedNode || null }));
     // debug: log selection to help troubleshoot property panel not opening
     try {
       // eslint-disable-next-line no-console
@@ -299,6 +348,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   clearSelection() {
     this.selectedId = undefined;
+    this.store.dispatch(CanvasActions.clearSelectedNode());
     this.finishTour();
     // cancel any in-progress linking
     this.linkingSourceId = null;

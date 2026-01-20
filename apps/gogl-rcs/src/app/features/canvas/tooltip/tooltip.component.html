@@ -1,15 +1,15 @@
 <div class="tooltip" #hostEl [attr.data-tooltip-id]="tooltip.id" [class.selected]="selected" (click)="onClick($event)" (dblclick)="onDblClick($event)"
-  [style.left.px]="tooltip.x" [style.top.px]="tooltip.y"
-  [style.transform]="'rotate(' + (tooltip.rotation || 0) + 'deg) scale(' + (tooltip.scale || 1) + ')'">
-  <div class="badge" (click)="onClick($event)"><span class="badge-icon">💬</span>
+  [style.left.px]="previewMode? 0: tooltip.x" [style.top.px]="previewMode? 0: tooltip.y"
+  [style.transform]="'rotate(' + (tooltip.rotation || 0) + 'deg) scale(' + (tooltip.scale || 1) + ')'" [style.position]="previewMode? 'relative' : 'absolute'">
+  <div class="badge" (click)="onClick($event)" *ngIf="!previewMode"><span class="badge-icon">💬</span>
     <h4>{{ tooltip.messageName }}</h4>
   </div>
   <!-- <button class="remove" (click)="onRemove($event)">✕</button> -->
-  <div class="handle handle_left" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">
+  <div class="handle handle_left"  *ngIf="!previewMode" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">
   </div>
-  <div class="handle handle_right" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">
+  <div class="handle handle_right"  *ngIf="!previewMode" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">
   </div>
-  <div class="handle handle_bottom" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)"
+  <div class="handle handle_bottom"  *ngIf="!previewMode" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)"
     title="Drag"></div>
 
   <div class="body">
@@ -34,10 +34,10 @@
         style="display:none" />
     </div>
 
-    <div *ngIf="tooltip.titleEnabled !== false" class="title"
+    <div #titleEl *ngIf="tooltip.titleEnabled !== false" class="title"
       [attr.contenteditable]="isEditing('title') ? 'true' : null" (dblclick)="onElementDblClick('title',$event)"
       (blur)="onInlineEdit('title',$event)">{{ tooltip.title }}</div>
-    <div *ngIf="tooltip.textEnabled !== false" class="desc" [attr.contenteditable]="isEditing('text') ? 'true' : null"
+    <div #textEl *ngIf="tooltip.textEnabled !== false" class="desc" [attr.contenteditable]="isEditing('text') ? 'true' : null"
       (dblclick)="onElementDblClick('text',$event)" (blur)="onInlineEdit('text',$event)">{{ tooltip.text }}</div>
 
 
