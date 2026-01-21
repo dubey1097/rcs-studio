@@ -126,10 +126,12 @@ export class PropertyPanelComponent implements OnChanges {
   updateSuggestion(index: number, key: string, value: any) {
     const s = this.suggestions[index];
     if (!s) return;
+    // Create a copy to avoid readonly property issues
+    const updatedSuggestion = { ...s, payload: { ...(s.payload || {}) } };
     // support nested keys like 'payload.url'
     if (key.indexOf('.') !== -1) {
       const parts = key.split('.');
-      let cur: any = s;
+      let cur: any = updatedSuggestion;
       for (let i = 0; i < parts.length - 1; i++) {
         const p = parts[i];
         if (cur[p] == null) cur[p] = {};
@@ -137,13 +139,15 @@ export class PropertyPanelComponent implements OnChanges {
       }
       cur[parts[parts.length - 1]] = value;
     } else {
-      (s as any)[key] = value;
+      (updatedSuggestion as any)[key] = value;
       // when type changes to 'action', set default actionType
-      if (key === 'type' && value === 'action' && !s.actionType) {
-        s.actionType = 'open_url';
-        if (!s.payload) s.payload = {};
+      if (key === 'type' && value === 'action' && !updatedSuggestion.actionType) {
+        updatedSuggestion.actionType = 'open_url';
+        if (!updatedSuggestion.payload) updatedSuggestion.payload = {};
       }
     }
+    // Update the suggestions array with the modified copy
+    this.suggestions[index] = updatedSuggestion;
     this.emitSuggestionsChange();
   }
 
