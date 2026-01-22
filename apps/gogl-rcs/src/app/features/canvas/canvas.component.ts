@@ -35,6 +35,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   agentId: string = "agent-01";
   flowId: string = "flow-01";
   flowName: string = "Sample Flow";
+  editing = false;
   tooltips: TooltipModel[] = [];
   selectedId?: string;
   // which specific field inside the selected tooltip is being edited (when double-clicked)
@@ -617,6 +618,10 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     const idx = this.tooltips.findIndex((t) => t.id === updated.id);
     if (idx >= 0) {
       this.tooltips[idx] = { ...updated };
+      // Update the store's selected node if this is the selected one
+      if (this.selectedId === updated.id) {
+        this.store.dispatch(CanvasActions.selectNode({ node: updated }));
+      }
     }
   }
 
@@ -922,5 +927,9 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tooltips.push(base);
     // ensure UI updates and tour positioning if needed
     setTimeout(() => this.positionTourTip(), 40);
+  }
+  save(event: Event) {
+    this.flowName = (event.target as HTMLInputElement).value;
+    this.editing = false;
   }
 }
