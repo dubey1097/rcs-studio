@@ -1,8 +1,41 @@
-<div class="preview">
-  <div class="phone">
-    <img class="frame" src="assets/frame.png" alt="frame" />
-    <div *ngIf="selectedNode$ | async as node">
-        <app-tooltip [tooltip]="node" [previewMode]="true"></app-tooltip>
+<div class="android-rim-outer">
+  <div class="android-rim-inner">
+    <div class="phone">
+
+      <div class="status-bar">
+        <span>9:30</span>
+        <div class="camera"></div>
+        <span>📶 📡 🔋</span>
+      </div>
+
+
+
+      <div class="header">
+        <div class="logo">✈</div>
+        <div class="title">Happy Sivas Airlines</div>
+      </div>
+
+      <div class="content">
+        <div *ngIf="selectedNode$ | async as node">
+           <app-tooltip [tooltip]="node" [previewMode]="true"></app-tooltip>
+          <!-- <div class="preview-node-display">
+            <div class="tooltip-preview" [style]="getPreviewStyle()">
+              <div class="tooltip-content">
+                <strong>{{ node.messageName }}</strong>
+                <p *ngIf="node.title">{{ node.title }}</p>
+                <p *ngIf="node.text">{{ node.text }}</p>
+                <p *ngIf="node.suggestions">{{ node.suggestions | json }}</p>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="bottom-bar">
+        <span>RCS messaging</span>
+        <span>💬 📎 😊</span>
+      </div>
+
     </div>
   </div>
 </div>
