@@ -235,8 +235,8 @@
 
 /* Bottom controls bar */
 .bottom-controls {
-  position: fixed;
-  bottom: 0;
+  position: absolute;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   height: 56px;
@@ -248,6 +248,7 @@
   padding: 8px 16px;
   z-index: 1000;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
 
   button {
     padding: 8px 12px;

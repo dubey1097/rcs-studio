@@ -9,25 +9,15 @@
       </div>
 
 
+      <div *ngIf="selectedNode$ | async as node">
+        <div class="header">
+          <div class="logo">✈</div>
+          <div class="title">{{node.messageName}}</div>
+        </div>
 
-      <div class="header">
-        <div class="logo">✈</div>
-        <div class="title">Happy Sivas Airlines</div>
-      </div>
+        <div class="content">
 
-      <div class="content">
-        <div *ngIf="selectedNode$ | async as node">
-           <app-tooltip [tooltip]="node" [previewMode]="true"></app-tooltip>
-          <!-- <div class="preview-node-display">
-            <div class="tooltip-preview" [style]="getPreviewStyle()">
-              <div class="tooltip-content">
-                <strong>{{ node.messageName }}</strong>
-                <p *ngIf="node.title">{{ node.title }}</p>
-                <p *ngIf="node.text">{{ node.text }}</p>
-                <p *ngIf="node.suggestions">{{ node.suggestions | json }}</p>
-              </div>
-            </div>
-          </div> -->
+          <app-tooltip [tooltip]="node" [previewMode]="true"></app-tooltip>
         </div>
       </div>
 
