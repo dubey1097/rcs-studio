@@ -2,6 +2,10 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TooltipModel } from '../tooltip.model';
 
+function uid(): string {
+  return Math.random().toString(36).slice(2, 9);
+}
+
 @Component({
   selector: 'app-property-panel',
   templateUrl: './property-panel.component.html',
@@ -79,7 +83,7 @@ export class PropertyPanelComponent implements OnChanges {
     // ensure at least one suggestion exists when suggestions are enabled
     const enabled = t.suggestion?.enabled || (t.suggestions && t.suggestions.length > 0) || false;
     if (enabled && this.suggestions.length === 0) {
-      this.suggestions.push({ enabled: true, type: 'text', text: 'New suggestion' });
+      this.suggestions.push({ enabled: true, type: 'text', text: 'New suggestion', id: uid() });
     }
 
     this.form.valueChanges.subscribe((v) => {
@@ -97,7 +101,7 @@ export class PropertyPanelComponent implements OnChanges {
       updated.subText = v.subText;
       // keep legacy single suggestion in sync with first suggestion if present
       updated.suggestions = [...this.suggestions];
-      updated.suggestion = updated.suggestions[0]? {...updated.suggestions[0], enabled: !!v.suggestionEnabled} : { enabled: !!v.suggestionEnabled, type: 'text', text: 'New Suggestion' };
+      updated.suggestion = updated.suggestions[0]? {...updated.suggestions[0], enabled: !!v.suggestionEnabled} : { enabled: !!v.suggestionEnabled, type: 'text', text: 'New Suggestion', id: uid() };
       this.update.emit(updated);
     });
 
@@ -105,14 +109,14 @@ export class PropertyPanelComponent implements OnChanges {
     const se = this.form.controls['suggestionEnabled'];
     se.valueChanges.subscribe((val: boolean) => {
       if (val && this.suggestions.length === 0) {
-        this.suggestions.push({ enabled: true, type: 'text', text: 'New suggestion' });
+        this.suggestions.push({ enabled: true, type: 'text', text: 'New suggestion', id: uid() });
         this.emitSuggestionsChange();
       }
     });
   }
 
   addSuggestion() {
-    const s = { enabled: true, type: 'text', text: 'New suggestion', actionType: 'open_url', payload: {} };
+    const s = { enabled: true, type: 'text', text: 'New suggestion', actionType: 'open_url', payload: {}, id: uid() };
     this.suggestions.push(s);
     // do not toggle suggestionEnabled automatically; keep the control state unchanged
     this.emitSuggestionsChange();
@@ -167,7 +171,7 @@ export class PropertyPanelComponent implements OnChanges {
     updated.suggestions = [...this.suggestions];
     // respect the current suggestionEnabled form control when setting the legacy `suggestion` entry
     const suggestionEnabled = (this.form && this.form.controls && this.form.controls['suggestionEnabled']) ? !!this.form.controls['suggestionEnabled'].value : (this.tooltip?.suggestion?.enabled ?? false);
-    updated.suggestion = updated.suggestions[0] ? { ...updated.suggestions[0], enabled: suggestionEnabled } : { enabled: suggestionEnabled, type: 'text', text: 'New suggestion' };
+    updated.suggestion = updated.suggestions[0] ? { ...updated.suggestions[0], enabled: suggestionEnabled } : { enabled: suggestionEnabled, type: 'text', text: 'New suggestion', id: uid() };
     this.update.emit(updated);
   }
 

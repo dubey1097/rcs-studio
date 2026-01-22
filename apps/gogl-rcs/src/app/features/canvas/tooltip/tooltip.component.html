@@ -45,11 +45,11 @@
       <div class="suggestion" *ngIf="tooltip.suggestions && tooltip.suggestions.length && tooltip.suggestion?.enabled">
           <div class="suggestion-content">
           <div [attr.contenteditable]="isEditing('suggestion', idx) ? 'true' : null"
-            (dblclick)="onElementDblClick('suggestion',$event, idx)" (blur)="onInlineEdit('suggestion',$event, idx)">{{ s?.text }}</div>
+            (dblclick)="onElementDblClick('suggestion',$event, idx)" (blur)="onInlineEdit('suggestion',$event, idx)" [textContent]="isEditing('suggestion', idx) ? null : s?.text"></div>
           <button type="button" class="link-dot"
             (pointerdown)="$event.stopPropagation();"
             (mousedown)="$event.stopPropagation(); $event.preventDefault();"
-            (click)="onStartLink($event)" title="Create relation from this suggestion"></button>
+            (click)="onStartLink($event, s?.id)" title="Create relation from this suggestion"></button>
         </div>
       </div>
     </ng-container>

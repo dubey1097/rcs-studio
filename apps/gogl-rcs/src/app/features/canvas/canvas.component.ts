@@ -1,8 +1,9 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { TooltipModel } from './tooltip.model';
+import { TooltipModel, Relation } from './tooltip.model';
 import * as CanvasActions from '../../store/actions/canvas.actions';
 import { AppState } from '../../store';
+import { convertCanvasToRCSFlow } from './canvas-export.utility';
 
 function uid(): string {
   return Math.random().toString(36).slice(2, 9);
@@ -14,7 +15,7 @@ function uid(): string {
   styleUrls: ['./canvas.component.scss'],
 })
 export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
     this.tourStep = 1;
@@ -31,7 +32,9 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     window.removeEventListener('resize', this._resizeHandler);
   }
 
-
+  agentId: string = "agent-01";
+  flowId: string = "flow-01";
+  flowName: string = "Sample Flow";
   tooltips: TooltipModel[] = [];
   selectedId?: string;
   // which specific field inside the selected tooltip is being edited (when double-clicked)
@@ -59,18 +62,13 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   assetTrayLeft: number | null = null;
   assetTrayTop: number | null = null;
 
-  // Relations between nodes: allow linking to a node id or to a canvas position
-  // `fromOffset` is an offset relative to the source node's top-left so links track when nodes move
-  relations: Array<{
-    from: string;
-    to?: string;
-    toPos?: { x: number; y: number };
-    fromPos?: { x: number; y: number };
-    fromOffset?: { x: number; y: number };
-  }> = [];
+  // Relations between nodes: allow linking from a suggestion (connector) to a message
+  // Connection from a suggestion/connector in one tooltip to the target tooltip
+  relations: Relation[] = [];
 
   // linking state when user starts drawing a relationship
   linkingSourceId: string | null = null;
+  linkingConnectorId: string | null = null;
   tempLinkStart: { x: number; y: number } | null = null;
   tempLinkEnd: { x: number; y: number } | null = null;
   // temporary endpoint marker (when user releases on empty canvas, shows clickable dot + icon)
@@ -82,6 +80,8 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   pendingAssetMenuPos: { x: number; y: number } | null = null;
   // source node id when creating a relation from a suggestion
   pendingSourceId: string | null = null;
+  // source connector id for the pending relation
+  pendingSourceConnectorId: string | null = null;
   // flag to prevent click from clearing pendingLinkEnd right after mouseup sets it
   private _justReleasedLink = false;
 
@@ -95,8 +95,9 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // Called when a tooltip's link-dot is clicked to begin drawing a relation
-  onStartLink(payload: { id: string; offsetX?: number; offsetY?: number }) {
+  onStartLink(payload: { id: string; connectorId?: string; offsetX?: number; offsetY?: number }) {
     this.linkingSourceId = payload.id;
+    this.linkingConnectorId = payload.connectorId || null;
     // Calculate start position using the offset from tooltip's top-left corner
     const fromT = this.tooltips.find((t) => t.id === payload.id);
     if (fromT && typeof payload.offsetX === 'number' && typeof payload.offsetY === 'number') {
@@ -188,7 +189,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   addTooltip() {
     const t: TooltipModel = {
       id: uid(),
-  messageName: 'Welcome message',
+      messageName: 'Welcome message',
       x: 50,
       y: 50,
       titleEnabled: false,
@@ -200,7 +201,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       mediaSize: 'medium',
       rotation: 0,
       scale: 1,
-      suggestion: { enabled: false, type: 'text', text: 'New suggestion' },
+      suggestion: { enabled: false, type: 'text', text: 'New suggestion', id: uid() },
       suggestions: [],
     };
     // Try to center the tooltip inside the canvas if available
@@ -285,7 +286,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onPreviewTrayMouseDown(event: MouseEvent) {
     if ((event.target as HTMLElement).closest('.tray-close')) return;
-    
+
     this.isDraggingPreviewTray = true;
     this._previewDragStartMouse = { x: event.clientX, y: event.clientY };
     this._previewDragStartPos = { ...this.previewTrayPosition };
@@ -325,9 +326,10 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         if (fromNode && this.tempLinkStart) {
           fromOffset = { x: this.tempLinkStart.x - (fromNode.x || 0), y: this.tempLinkStart.y - (fromNode.y || 0) };
         }
-        this.relations.push({ from: source, to: id, fromOffset });
+        this.relations.push({ fromMessageId: source, fromSuggestionId: this.linkingConnectorId || '', connectionId: uid(), toMessageId: id, fromOffset });
       }
       this.linkingSourceId = null;
+      this.linkingConnectorId = null;
       this.tempLinkStart = null;
       this.tempLinkEnd = null;
       this.selectedId = id; // Ensure the node is still selected
@@ -340,7 +342,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       // eslint-disable-next-line no-console
       console.log('[Canvas] selected tooltip', id);
-    } catch (err) {}
+    } catch (err) { }
     // single-click selection clears any focused field editing
     this.focusedField = undefined;
     this.nextTour();
@@ -352,6 +354,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.finishTour();
     // cancel any in-progress linking
     this.linkingSourceId = null;
+    this.linkingConnectorId = null;
     this.tempLinkStart = null;
     this.tempLinkEnd = null;
   }
@@ -369,7 +372,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       const targetEl = e.target as HTMLElement | null;
       // if click originated inside a tooltip, don't clear selection (protect against bubbling/CDK)
       if (targetEl && targetEl.closest && targetEl.closest('.tooltip')) return;
-    } catch (err) {}
+    } catch (err) { }
     // Clear pending endpoint and remove temporary relation when clicking on actual canvas after some time
     this.onCanvasClearPending();
     this.clearSelection();
@@ -415,17 +418,19 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       // Set pending endpoint marker to show clickable dot + icon at arrow tip
       this.pendingLinkEnd = { x, y };
       this.pendingSourceId = this.linkingSourceId;
+      this.pendingSourceConnectorId = this.linkingConnectorId;
       this._justReleasedLink = true;
       // Create a solid relation to this position so arrow persists
       // Use the actual offset from the link dot click (stored in tempLinkStart)
       const fromT = this.tooltips.find((t) => t.id === this.linkingSourceId);
       const tempRelationId = `_pending_${Math.random().toString(36).slice(2, 9)}`;
       this.pendingRelationId = tempRelationId;
-      this.relations.push({ from: this.linkingSourceId!, toPos: { x, y }, fromPos: this.tempLinkStart || undefined });
+      this.relations.push({ fromMessageId: this.linkingSourceId!, fromSuggestionId: this.linkingConnectorId || '', connectionId: uid(), toPos: { x, y }, fromPos: this.tempLinkStart || undefined });
       // Clear flag after a tick so click handler can detect it
       setTimeout(() => { this._justReleasedLink = false; }, 0);
       // Clear linking state
       this.linkingSourceId = null;
+      this.linkingConnectorId = null;
       this.tempLinkStart = null;
       this.tempLinkEnd = null;
     } catch (err) {
@@ -466,7 +471,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     // Create a real relation from source to the newly created node
     // Calculate the fromOffset based on the current tooltip position and the stored fromPos
     const pendingRelation = this.relations.find(r =>
-      r.from === this.pendingSourceId &&
+      r.fromMessageId === this.pendingSourceId &&
       r.toPos &&
       this.pendingLinkEnd &&
       r.toPos.x === this.pendingLinkEnd.x &&
@@ -477,13 +482,14 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       x: pendingRelation.fromPos.x - (fromT.x || 0),
       y: pendingRelation.fromPos.y - (fromT.y || 0)
     } : { x: 30, y: 20 }; // fallback to old hardcoded value
-    this.relations.push({ from: this.pendingSourceId, to: newAsset.id, fromOffset });
+    this.relations.push({ fromMessageId: this.pendingSourceId, fromSuggestionId: this.pendingSourceConnectorId || '', connectionId: uid(), toMessageId: newAsset.id, fromOffset });
 
     // Clear pending state
     this.showPendingAssetMenu = false;
     this.pendingAssetMenuPos = null;
     this.pendingLinkEnd = null;
     this.pendingSourceId = null;
+    this.pendingSourceConnectorId = null;
     this.pendingRelationId = null;
   }
 
@@ -503,7 +509,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       mediaSize: 'medium',
       rotation: 0,
       scale: 1,
-      suggestion: { enabled: false, type: 'text', text: '' },
+      suggestion: { enabled: false, type: 'text', text: '', id: uid() },
       suggestions: [],
     };
 
@@ -550,6 +556,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pendingAssetMenuPos = null;
     this.pendingLinkEnd = null;
     this.pendingSourceId = null;
+    this.pendingSourceConnectorId = null;
   }
 
   // Compute a smooth cubic-bezier path string between two points
@@ -564,8 +571,8 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // Return SVG path 'd' for an existing relation
-  getRelationPath(r: { from: string; to?: string; toPos?: { x: number; y: number }; fromPos?: { x: number; y: number }; fromOffset?: { x: number; y: number } }): string {
-    const fromT = this.tooltips.find((t) => t.id === r.from);
+  getRelationPath(r: { fromMessageId: string; toMessageId?: string; toPos?: { x: number; y: number }; fromPos?: { x: number; y: number }; fromOffset?: { x: number; y: number } }): string {
+    const fromT = this.tooltips.find((t) => t.id === r.fromMessageId);
     if (!fromT) return '';
     // derive start: prefer a stored relative offset so it follows the node; fall back to previously stored absolute pos for compatibility
     let start = { x: (fromT.x || 0) + 30, y: (fromT.y || 0) + 20 };
@@ -579,8 +586,8 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let end = { x: 0, y: 0 };
     if (r.toPos) end = r.toPos;
-    else if (r.to) {
-      const toT = this.tooltips.find((t) => t.id === r.to!);
+    else if (r.toMessageId) {
+      const toT = this.tooltips.find((t) => t.id === r.toMessageId!);
       if (!toT) return '';
       end = { x: (toT.x || 0) + 30, y: (toT.y || 0) + 20 };
     } else return '';
@@ -594,9 +601,9 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // Return pixel coords for relation ends relative to canvas for rendering
-  getRelationCoords(r: { from: string; to: string }) {
-    const from = this.tooltips.find((t) => t.id === r.from);
-    const to = this.tooltips.find((t) => t.id === r.to);
+  getRelationCoords(r: { fromMessageId: string; toMessageId: string }) {
+    const from = this.tooltips.find((t) => t.id === r.fromMessageId);
+    const to = this.tooltips.find((t) => t.id === r.toMessageId);
     const defaultPos = { x1: 0, y1: 0, x2: 0, y2: 0 };
     if (!from || !to) return defaultPos;
     const x1 = (from.x || 0) + 30;
@@ -629,16 +636,18 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveJson() {
-    const json = JSON.stringify(this.tooltips, null, 2);
+    const flow = convertCanvasToRCSFlow(this.agentId, this.flowId, this.tooltips, this.relations, this.flowName);
+    const json = JSON.stringify(flow, null, 2);
     // trigger download
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'tooltips.json';
+    a.download = `flow-${this.flowId}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
+
 
   // Toggle the asset tray visibility
   toggleAssetTray(): void {
@@ -755,7 +764,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const canvasRect = canvasEl.getBoundingClientRect();
       if (event.clientX >= canvasRect.left && event.clientX <= canvasRect.right &&
-          event.clientY >= canvasRect.top && event.clientY <= canvasRect.bottom) {
+        event.clientY >= canvasRect.top && event.clientY <= canvasRect.bottom) {
         const x = Math.max(8, Math.round(event.clientX - canvasRect.left));
         const y = Math.max(8, Math.round(event.clientY - canvasRect.top));
         this.addAssetAtPosition(this._draggedAssetType, x, y);
@@ -873,7 +882,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   addAssetAtPosition(type: string, x: number, y: number) {
     const base: TooltipModel = {
       id: uid(),
-  messageName: `${type} - ${Date.now()}`,
+      messageName: `${type} - ${Date.now()}`,
       x,
       y,
       titleEnabled: false,
@@ -885,7 +894,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       mediaSize: 'medium',
       rotation: 0,
       scale: 1,
-      suggestion: { enabled: false, type: 'text', text: '' },
+      suggestion: { enabled: false, type: 'text', text: '', id: uid() },
       suggestions: [],
     };
 

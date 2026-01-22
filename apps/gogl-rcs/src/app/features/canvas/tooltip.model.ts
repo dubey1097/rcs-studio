@@ -2,6 +2,7 @@ export type MediaOrientation = 'vertical' | 'horizontal';
 export type MediaSize = 'tall' | 'short' | 'medium';
 
 export interface Suggestion {
+  id: string; // unique identifier for this suggestion/connector
   enabled: boolean;
   type: 'text' | 'action';
   text: string;
@@ -23,6 +24,16 @@ export interface Suggestion {
     lng?: string;
     address?: string;
   };
+}
+
+export interface Relation {
+  fromMessageId: string; // source tooltip/message id
+  fromSuggestionId: string; // suggestion id (previously fromConnectorId)
+  connectionId?: string; // unique identifier for this connection
+  toMessageId?: string; // target message id (optional for temporary position-based relations)
+  toPos?: { x: number; y: number }; // fallback position if target is not a message
+  fromPos?: { x: number; y: number };
+  fromOffset?: { x: number; y: number };
 }
 
 export interface TooltipModel {

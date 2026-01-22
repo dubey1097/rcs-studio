@@ -1,6 +1,10 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TooltipModel } from '../tooltip.model';
 
+function uid(): string {
+  return Math.random().toString(36).slice(2, 9);
+}
+
 @Component({
   selector: 'app-tooltip',
   templateUrl: './tooltip.component.html',
@@ -15,7 +19,7 @@ export class TooltipComponent implements OnInit {
   @Output() editField = new EventEmitter<string>();
   @Output() update = new EventEmitter<TooltipModel>();
   @Output() remove = new EventEmitter<string>();
-  @Output() startLink = new EventEmitter<{ id: string; offsetX?: number; offsetY?: number }>();
+  @Output() startLink = new EventEmitter<{ id: string; connectorId?: string; offsetX?: number; offsetY?: number }>();
 
   dragging = false;
   offset = { x: 0, y: 0 };
@@ -113,7 +117,7 @@ export class TooltipComponent implements OnInit {
     e.stopPropagation();
     // enable suggestion editing and open in panel (parent will pick selection)
     if (!this.tooltip.suggestion) {
-      this.tooltip.suggestion = { enabled: true, type: 'text', text: '' };
+      this.tooltip.suggestion = { enabled: true, type: 'text', text: '', id: uid() };
     } else {
       this.tooltip.suggestion.enabled = true;
     }
@@ -138,14 +142,14 @@ export class TooltipComponent implements OnInit {
         this.tooltip.suggestions[si].enabled = true;
       } else {
         // fallback to legacy suggestion
-        if (!this.tooltip.suggestion) this.tooltip.suggestion = { enabled: true, type: 'text', text: '' };
+        if (!this.tooltip.suggestion) this.tooltip.suggestion = { enabled: true, type: 'text', text: '', id: uid() };
         else this.tooltip.suggestion.enabled = true;
       }
       this.update.emit(this.tooltip);
     }
   }
 
-  onStartLink(e: MouseEvent) {
+  onStartLink(e: MouseEvent, connectorId?: string) {
     e.stopPropagation();
     // Calculate the offset from the tooltip's top-left corner to the link dot
     const tooltipRect = this.hostEl.nativeElement.getBoundingClientRect();
@@ -153,8 +157,8 @@ export class TooltipComponent implements OnInit {
       x: e.clientX - tooltipRect.left,
       y: e.clientY - tooltipRect.top
     };
-    // emit source id and offset from tooltip top-left so parent can calculate absolute position
-    this.startLink.emit({ id: this.tooltip.id, offsetX: linkDotOffset.x, offsetY: linkDotOffset.y });
+    // emit source id, connector id, and offset from tooltip top-left so parent can calculate absolute position
+    this.startLink.emit({ id: this.tooltip.id, connectorId, offsetX: linkDotOffset.x, offsetY: linkDotOffset.y });
   }
 
   onRemove(e: MouseEvent) {
