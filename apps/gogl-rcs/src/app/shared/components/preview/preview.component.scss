@@ -1,25 +1,196 @@
-.preview {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+/* PHONE FRAME */
+/* DARK OUTER RIM */
+.android-rim-outer {
+  padding: 6px;
+  border-radius: 52px;
+  border: #666 solid 1px;
+  // background: linear-gradient(
+  //   145deg,
+  //   #fcf8f8,
+  //   #9c9a9a
+  // );
+  // box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+}
+
+/* LIGHT INNER RIM */
+.android-rim-inner {
+  padding: 4px;
+  border-radius: 46px;
+  background: linear-gradient(
+    145deg,
+    #fdfafa,
+    #000
+  );
 }
 
 .phone {
+  width: 330px;
+  height: 650px;
+  background: #f5f5f5;
+  border-radius: 40px;
+  border: 8px solid #000;
+  // box-shadow: 0 25px 60px rgba(0,0,0,0.6);
   position: relative;
-  width: 220px;
-  height: 473PX;
-  padding: 24px;
+  overflow: hidden;
 }
 
-.frame {
+/* STATUS BAR */
+.status-bar {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #000;
+}
+
+/* CAMERA (PUNCH HOLE) */
+.camera {
+  width: 14px;
+  height: 14px;
+  background: #000;
+  border-radius: 50%;
   position: absolute;
-  inset: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* HEADER */
+.header {
+  margin-top: 20px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* LOGO */
+.logo {
+  width: 36px;
+  height: 36px;
+  background: #00bcd4;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* TITLE */
+.title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* CONTENT */
+.content {
+  height: calc(100% - 200px);
+  background: #fafafa;
+  padding: 10px;
+}
+
+/* BOTTOM BAR */
+.bottom-bar {
+  height: 50px;
+  background: #eef7f7;
+  border-top: 1px solid #ccc;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.preview-container {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  border-radius: 16%;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-node-display {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  height: 100%;
+}
+
+.node-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  border-left: 3px solid #2f6feb;
+  padding-left: 12px;
+
+  strong {
+    font-size: 16px;
+    color: #2f6feb;
+    margin-bottom: 4px;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+  }
+}
+
+.tooltip-preview {
+  background: linear-gradient(135deg, #f0f4ff 0%, #fff7f0 100%);
+  border: 2px solid #2f6feb;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  transition: transform 150ms ease;
+}
+
+.tooltip-content {
+  text-align: center;
+  padding: 12px;
+  
+  strong {
+    display: block;
+    color: #2f6feb;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+    font-size: 13px;
+    word-wrap: break-word;
+  }
 }
 
 
+/* TITLE */
+.title {
+  font-size: 16px;
+  font-weight: 600;
+}
 
+/* CONTENT */
+.content {
+  height: calc(100% - 200px);
+  background: #fafafa;
+}
 
+/* BOTTOM BAR */
+.bottom-bar {
+  height: 50px;
+  background: #eef7f7;
+  border-top: 1px solid #ccc;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}

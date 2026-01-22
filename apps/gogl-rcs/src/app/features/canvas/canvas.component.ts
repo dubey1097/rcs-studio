@@ -617,10 +617,6 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     const idx = this.tooltips.findIndex((t) => t.id === updated.id);
     if (idx >= 0) {
       this.tooltips[idx] = { ...updated };
-      // Update the store's selected node if this is the selected one
-      if (this.selectedId === updated.id) {
-        this.store.dispatch(CanvasActions.selectNode({ node: updated }));
-      }
     }
   }
 

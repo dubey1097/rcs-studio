@@ -25,4 +25,11 @@ export class PreviewComponent implements OnInit {
     return this.tooltip;
   }
 
+  getPreviewStyle() {
+    const tooltip = this.getDisplayTooltip();
+    if (!tooltip) return {};
+    return {
+      transform: `rotate(${tooltip.rotation || 0}deg) scale(${tooltip.scale || 1})`,
+    };
+  }
 }
