@@ -31,7 +31,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     window.removeEventListener('resize', this._resizeHandler);
   }
-
+  editing = false;
   agentId: string = "agent-01";
   flowId: string = "flow-01";
   flowName: string = "Sample Flow";
@@ -647,7 +647,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `flow-${this.flowId}.json`;
+    a.download = `${this.flowName}-${this.flowId}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -926,5 +926,9 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tooltips.push(base);
     // ensure UI updates and tour positioning if needed
     setTimeout(() => this.positionTourTip(), 40);
+  }
+  save(event: Event) {
+    this.flowName = (event.target as HTMLInputElement).value;
+    this.editing = false;
   }
 }

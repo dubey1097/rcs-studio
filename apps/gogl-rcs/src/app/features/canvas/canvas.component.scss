@@ -2,18 +2,36 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: #F0F4F9;
+  border-radius: 1rem;
 }
 
 .toolbar {
-  padding: 8px;
-  background: #f3f3f3;
-  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 24px;
+  height: 64px;
+
+  .flow {
+    display: flex;
+    gap: 10px;
+  }
+
+  .template-action {
+    display: flex;
+    gap: 10px;
+
+    button {
+      border: none;
+    }
+  }
 }
 
 .workspace {
   display: flex;
   flex: 1 1 auto;
-  height: calc(100vh - 175px);
+  height: calc(100vh - 115px);
   /* ensure absolutely positioned overlays inside workspace are constrained to this area */
   position: relative;
 }
@@ -21,8 +39,10 @@
 .canvas {
   flex: 1 1 auto;
   position: relative;
-  background: #fff;
+  // background: #fff;
   border-right: 1px solid #e5e5e5;
+  background-image: radial-gradient(#bbb 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 .panel {
@@ -218,8 +238,8 @@
 
 /* Bottom controls bar */
 .bottom-controls {
-  position: fixed;
-  bottom: 0;
+  position: absolute;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   height: 56px;
@@ -231,6 +251,7 @@
   padding: 8px 16px;
   z-index: 1000;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
 
   button {
     padding: 8px 12px;
@@ -312,8 +333,9 @@
   max-height: 80vh;
   background: #fff;
   border: 1px solid #e6e6e6;
-  border-radius: 8px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  // border-radius: 8px;
+  // box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -342,8 +364,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #f1f1f1;
-  background: #fafafa;
+  // border-bottom: 1px solid #f1f1f1;
+  // background: #fafafa;
+  border-bottom: none;
+  background: transparent;
   flex-shrink: 0;
   user-select: none;
 }
@@ -380,4 +404,13 @@
   max-height: calc(70vh - 56px);
   flex: 1;
   padding: 12px;
+}
+
+.send-to-phone {
+  background: #2f6feb;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 20px;
+  cursor: pointer;
 }

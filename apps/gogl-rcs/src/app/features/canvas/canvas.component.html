@@ -1,8 +1,17 @@
 <div class="canvas-shell">
   <div class="toolbar">
-    <!-- <button (click)="addTooltip()">Add Tooltip</button> -->
-    <button (click)="saveJson()">Save JSON</button>
-    <button (click)="resetTour()" style="margin-left:8px">Reset tour</button>
+    <div class="flow"><span class="badge-icon">💬</span>
+      <span *ngIf="!editing" (click)="editing = true">
+        {{ flowName }}
+      </span>
+
+      <input *ngIf="editing" [value]="flowName" (blur)="save($event)" (keydown.enter)="save($event)" />
+    </div>
+
+    <div class="template-action">
+      <button (click)="saveJson()"> Get JSON</button>
+      <button class="send-to-phone">Send to phone</button>
+    </div>
   </div>
 
   <div class="workspace">
@@ -68,10 +77,8 @@
     <div class="preview-tray" [class.open]="showPreview" role="region" [attr.aria-hidden]="!showPreview"
       *ngIf="tooltips.length > 0"
       [style.transform]="'translate(calc(-50% + ' + previewTrayPosition.x + 'px), calc(-50% + ' + previewTrayPosition.y + 'px)) scale(' + (showPreview ? 1 : 0) + ')'"
-      [class.dragging]="isDraggingPreviewTray"
-      (mousedown)="onPreviewTrayMouseDown($event)"
-      (mousemove)="onPreviewTrayMouseMove($event)"
-      (mouseup)="onPreviewTrayMouseUp()"
+      [class.dragging]="isDraggingPreviewTray" (mousedown)="onPreviewTrayMouseDown($event)"
+      (mousemove)="onPreviewTrayMouseMove($event)" (mouseup)="onPreviewTrayMouseUp()"
       (mouseleave)="onPreviewTrayMouseUp()">
       <div class="tray-content" tabindex="-1">
         <div class="tray-header" style="cursor: grab;">
