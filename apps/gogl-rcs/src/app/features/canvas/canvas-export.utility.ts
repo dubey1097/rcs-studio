@@ -32,7 +32,7 @@ export interface RichCardContent {
 
 export interface RichCard {
   card_orientation: string;
-  thumbnail_image_alignment: string;
+  thumbnail_image_alignment?: string;
   card_content: RichCardContent;
 }
 
@@ -102,7 +102,7 @@ export function convertCanvasToRCSFlow(
 ): RCSFlow {
   // Create nodes from tooltips
   const nodes: FlowNode[] = tooltips.map(tooltip => {
-    const suggestions: AgentSuggestion[] = (tooltip.suggestions || []).map(suggestion => ({
+    const suggestions: AgentSuggestion[] = (tooltip.suggestion?.enabled ? (tooltip.suggestions || []):[]).map(suggestion => ({
       agent_suggestion_key: {
         agent_id: agentId,
         flow_id: flowId,
@@ -146,7 +146,7 @@ export function convertCanvasToRCSFlow(
           content: {
             rich_card: {
               card_orientation: tooltip.mediaOrientation === 'horizontal' ? 'CARD_ORIENTATION_HORIZONTAL' : 'CARD_ORIENTATION_VERTICAL',
-              thumbnail_image_alignment: 'THUMBNAIL_IMAGE_ALIGNMENT_RIGHT',
+              ...(tooltip?.mediaEnabled && { thumbnail_image_alignment: 'THUMBNAIL_IMAGE_ALIGNMENT_RIGHT' }),
               card_content: cardContent,
             },
           },
