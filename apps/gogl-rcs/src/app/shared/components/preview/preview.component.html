@@ -1,31 +1,89 @@
-<div class="android-rim-outer">
-  <div class="android-rim-inner">
-    <div class="phone">
+<div class="modal" [class.landscape]="orientation === 'landscape'">
 
-      <div class="status-bar">
-        <span>9:30</span>
-        <div class="camera"></div>
-        <span>📶 📡 🔋</span>
-      </div>
+  <!-- HEADER -->
+  <div class="header">
+    <span class="title">Preview</span>
+    <img src="assets/close_icon.png" class="icon close" (click)="close.emit()" />
+  </div>
 
+  <!-- CONTROL PANEL -->
+  <div class="controls">
 
+    <!-- Orientation -->
+    <div class="group">
+      <button [class.active]="orientation === 'portrait'" (click)="setOrientation('portrait')">
+        <img src="assets/potrait.png" />
+      </button>
+
+      <button [class.active]="orientation === 'landscape'" (click)="setOrientation('landscape')">
+        <img src="assets/lanscape.png" />
+      </button>
+    </div>
+
+    <!-- Theme -->
+    <div class="group">
+      <button [class.active]="theme === 'light'" (click)="setTheme('light')">
+        <img src="assets/lightmode.png" />
+      </button>
+
+      <button [class.active]="theme === 'dark'" (click)="setTheme('dark')">
+        <img src="assets/dark_mode.png" />
+      </button>
+    </div>
+
+    <!-- Platform -->
+    <div class="group">
+      <button [class.active]="platform === 'android'" (click)="setPlatform('android')">
+        <img src="assets/andriod.png" />
+      </button>
+
+      <button [class.active]="platform === 'ios'" (click)="setPlatform('ios')">
+        <img src="assets/ios.png" />
+      </button>
+    </div>
+
+  </div>
+
+  <!-- PREVIEW BODY -->
+  <div class="preview-container" [class.dark]="theme === 'dark'" [class.landscape]="orientation === 'landscape'">
+    <div class="phone-frame">
+      <img [src]="
+          platform === 'android'
+            ? (orientation === 'portrait' && theme === 'light'
+              ? 'assets/android_potrait.png'
+              : orientation === 'landscape' && theme === 'light'
+              ? 'assets/andriod_landscape.jpg'
+              : orientation === 'landscape' && theme === 'dark'
+              ? 'assets/dark_landscape_andrd.png'
+              : 'assets/darkmode_potrait_andrd.png')
+            : platform === 'ios'
+            ? (orientation === 'portrait' && theme === 'light'
+              ? 'assets/IOS_potrait.png'
+              : orientation === 'landscape' && theme === 'light'
+              ? 'assets/IOS_light_landscape.png'
+              : orientation === 'landscape' && theme === 'dark'
+              ? 'assets/IOS_dark_landscape.png'
+              : 'assets/IOS_potrait.png')
+            : 'assets/IOS_potrait.png'
+          " alt="preview" />
+    </div>
+    <div class="overlay-content">
       <div *ngIf="selectedNode$ | async as node">
-        <div class="header">
-          <div class="logo">✈</div>
-          <div class="title">{{node.messageName}}</div>
-        </div>
-
         <div class="content">
-
           <app-tooltip [tooltip]="node" [previewMode]="true"></app-tooltip>
         </div>
       </div>
-
-      <div class="bottom-bar">
-        <span>RCS messaging</span>
-        <span>💬 📎 😊</span>
-      </div>
-
     </div>
   </div>
+
+  <!-- FOOTER -->
+  <div class="preview-container ios">
+
+    <!-- CHAT CONTENT -->
+    <div class="chat-wrapper">
+      <!-- your iOS message bubble code here -->
+    </div>
+
+  </div>
+
 </div>

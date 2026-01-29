@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 // CDK Drag & Drop
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+import { SharedModule } from '../../shared/shared.module';
 import { TooltipComponent } from './tooltip/tooltip.component';
 import { PropertyPanelComponent } from './property-panel/property-panel.component';
 import { FocusedFieldComponent } from './property-panel/focused-field.component';
@@ -36,6 +37,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
+    SharedModule,
     // Angular Material modules
     MatButtonModule,
     MatInputModule,

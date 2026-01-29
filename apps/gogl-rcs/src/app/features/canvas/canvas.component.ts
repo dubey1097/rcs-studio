@@ -46,6 +46,9 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   // Transform controls state
   showPreview = false;
 
+  // Phone preview modal
+  showPhonePreviewModal = false;
+
   // Preview tray drag state
   previewTrayPosition = { x: 0, y: 0 };
   private _previewDragStartMouse = { x: 0, y: 0 };
@@ -282,6 +285,14 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   closePreview() {
+    this.showPreview = false;
+  }
+
+  openPhonePreview() {
+    this.showPhonePreviewModal = true;
+  }
+
+  closePhonePreview() {
     this.showPreview = false;
   }
 

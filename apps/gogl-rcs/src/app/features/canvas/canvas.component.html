@@ -8,7 +8,7 @@
 
       <input *ngIf="editing" [value]="flowName" (blur)="save($event)" (keydown.enter)="save($event)" />
     </div>
-    
+
     <div class="template-action">
       <button (click)="saveJson()"> Get JSON</button>
       <button class="send-to-phone">Send to phone</button>
@@ -83,12 +83,8 @@
       (mousemove)="onPreviewTrayMouseMove($event)" (mouseup)="onPreviewTrayMouseUp()"
       (mouseleave)="onPreviewTrayMouseUp()">
       <div class="tray-content" tabindex="-1">
-        <div class="tray-header" style="cursor: grab;">
-          <strong>Preview</strong>
-          <button class="tray-close" (click)="closePreview()" aria-label="Close preview">×</button>
-        </div>
         <div class="tray-body">
-          <app-preview></app-preview>
+          <app-preview [visible]="showPhonePreviewModal" (close)="closePhonePreview()"></app-preview>
         </div>
       </div>
     </div>
