@@ -30,7 +30,7 @@ export class TooltipComponent implements OnInit {
   // when editing a suggestion, which suggestion index is being edited
   editingSuggestionIndex?: number | null;
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onMouseDown(e: MouseEvent) {
     e.stopPropagation();
@@ -52,7 +52,7 @@ export class TooltipComponent implements OnInit {
 
   onPointerDown(e: PointerEvent) {
     // forward pointer events to same handler (MouseEvent shape is similar for our usage)
-  this.onMouseDown(e as unknown as MouseEvent);
+    this.onMouseDown(e as unknown as MouseEvent);
     // try to capture the pointer on the host element so we receive pointer events reliably
     try {
       this.hostEl?.nativeElement?.setPointerCapture?.((e as any).pointerId);
@@ -113,6 +113,18 @@ export class TooltipComponent implements OnInit {
     this.selectTooltip.emit(this.tooltip.id);
   }
 
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(e: KeyboardEvent) {
+    // only trigger delete if this tooltip is selected
+    if (!this.selected) return;
+
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.remove.emit(this.tooltip.id);
+    }
+  }
+
   onDblClick(e: MouseEvent) {
     e.stopPropagation();
     // enable suggestion editing and open in panel (parent will pick selection)
@@ -131,7 +143,7 @@ export class TooltipComponent implements OnInit {
     this.editingField = field;
     if (field === 'suggestion') this.editingSuggestionIndex = typeof suggestionIndex === 'number' ? suggestionIndex : 0;
     // ensure this tooltip is selected
-  this.selectTooltip.emit(this.tooltip.id);
+    this.selectTooltip.emit(this.tooltip.id);
     // notify parent that a specific field is being edited so the property panel can focus
     this.editField.emit(field);
     // allow updating in case suggestion needs enabling
