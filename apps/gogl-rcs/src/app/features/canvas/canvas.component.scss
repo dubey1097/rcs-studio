@@ -17,10 +17,12 @@
     display: flex;
     gap: 10px;
   }
+
   .template-action {
     display: flex;
     gap: 10px;
-    button{
+
+    button {
       border: none;
     }
   }
@@ -51,6 +53,9 @@
   box-sizing: border-box;
   overflow-y: auto;
   z-index: 1200;
+  margin-right: 20px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
 }
 
 .hint {
@@ -400,6 +405,7 @@
   flex: 1;
   padding: 12px;
 }
+
 .send-to-phone {
   background: #2f6feb;
   color: #fff;

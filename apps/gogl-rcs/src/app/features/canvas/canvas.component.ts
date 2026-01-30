@@ -35,6 +35,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   agentId: string = "agent-01";
   flowId: string = "flow-01";
   flowName: string = "Sample Flow";
+  showPropertyPanel: boolean = false;
   editing = false;
   tooltips: TooltipModel[] = [];
   selectedId?: string;
@@ -184,7 +185,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get selectedTooltip(): TooltipModel | undefined {
-    return this.tooltips.find((t) => t.id === this.selectedId);
+    return this.selectedId?this.tooltips.find((t) => t.id === this.selectedId): undefined;
   }
 
   addTooltip() {
@@ -337,6 +338,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.selectedId = id;
+    this.showPropertyPanel = true;
     const selectedNode = this.tooltips.find((t) => t.id === id);
     this.store.dispatch(CanvasActions.selectNode({ node: selectedNode || null }));
     // debug: log selection to help troubleshoot property panel not opening
@@ -349,7 +351,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.nextTour();
   }
 
-  clearSelection() {
+  clearSelection(showProperty: boolean = false) {
     this.selectedId = undefined;
     this.store.dispatch(CanvasActions.clearSelectedNode());
     this.finishTour();
@@ -358,6 +360,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.linkingConnectorId = null;
     this.tempLinkStart = null;
     this.tempLinkEnd = null;
+    this.showPropertyPanel = showProperty;
   }
 
   onCanvasClick(e: MouseEvent) {
@@ -376,7 +379,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     } catch (err) { }
     // Clear pending endpoint and remove temporary relation when clicking on actual canvas after some time
     this.onCanvasClearPending();
-    this.clearSelection();
+    this.clearSelection(true);
   }
 
   // Update temporary link end coords while user moves pointer

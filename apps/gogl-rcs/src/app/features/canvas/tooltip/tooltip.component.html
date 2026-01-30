@@ -4,7 +4,6 @@
   <div class="badge" (click)="onClick($event)" *ngIf="!previewMode"><span class="badge-icon">💬</span>
     <h4>{{ tooltip.messageName }}</h4>
   </div>
-  <!-- <button class="remove" (click)="onRemove($event)">✕</button> -->
   <div class="handle handle_left"  *ngIf="!previewMode" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">
   </div>
   <div class="handle handle_right"  *ngIf="!previewMode" (pointerdown)="onPointerDown($event)" (mousedown)="onMouseDown($event)" title="Drag">

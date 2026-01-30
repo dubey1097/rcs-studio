@@ -92,8 +92,7 @@
         </div>
       </div>
     </div>
-
-    <div class="panel" *ngIf="selectedId">
+    <div class="panel" *ngIf="showPropertyPanel">
       <app-property-panel [tooltip]="selectedTooltip" [focusedField]="focusedField" (update)="updateTooltip($event)"
         (clearFocus)="onClearFocus()" (close)="clearSelection()"></app-property-panel>
     </div>

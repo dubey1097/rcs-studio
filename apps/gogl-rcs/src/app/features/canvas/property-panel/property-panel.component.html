@@ -1,4 +1,4 @@
-<div *ngIf="tooltip; else noSelection" class="panel-root">
+
   <div class="panel-header">
     <h3>Properties</h3>
     <button mat-icon-button *ngIf="!focusedField" class="close" (click)="close.emit()">
@@ -8,9 +8,9 @@
       <button mat-button class="close" (click)="clearFocus.emit()">← Back</button>
     </div>
   </div>
-
+<div *ngIf="tooltip; else noSelection" class="panel-root">
   <!-- Full panel view (when not focusing a specific field) -->
-  <div *ngIf="!focusedField">
+  <div *ngIf="!focusedField && tooltip">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Message name</mat-label>
       <input matInput [formControl]="form.controls['messageName']" />
@@ -60,11 +60,23 @@
       <span class="section-label">Text <mat-icon matTooltip="Main message body shown below the title" class="info-icon">info</mat-icon></span>
       <mat-slide-toggle [formControl]="form.controls['textEnabled']" class="right"></mat-slide-toggle>
     </div>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Text</mat-label>
-      <textarea matInput [formControl]="form.controls['text']" maxlength="300" rows="5"></textarea>
-      <mat-hint align="end">{{ form.controls['text'].value?.length || 0 }} / 300</mat-hint>
-    </mat-form-field>
+    <div style="position: relative;">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Text</mat-label>
+        <textarea matInput [formControl]="form.controls['text']" maxlength="300" rows="5"></textarea>
+        <mat-hint align="end">{{ form.controls['text'].value?.length || 0 }} / 300</mat-hint>
+      </mat-form-field>
+      <button mat-icon-button style="position: absolute; right: 8px;bottom: 30px;" matTooltip="Add emoji" (click)="toggleEmojiPicker()" type="button">
+        <mat-icon>emoji_emotions</mat-icon>
+      </button>
+      <div *ngIf="showEmojiPicker" class="emoji-picker">
+        <div class="emoji-grid">
+          <button *ngFor="let emoji of emojis" class="emoji-btn" (click)="insertEmoji(emoji)" type="button">
+            {{ emoji }}
+          </button>
+        </div>
+      </div>
+    </div>
 
     <hr />
     <div class="section-header">

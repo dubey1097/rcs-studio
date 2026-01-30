@@ -106,6 +106,18 @@ export class TooltipComponent implements OnInit {
     this.onMouseUp(e as unknown as MouseEvent);
   }
 
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(e: KeyboardEvent) {
+    // only trigger delete if this tooltip is selected
+    if (!this.selected) return;
+    
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.remove.emit(this.tooltip.id);
+    }
+  }
+
   onClick(e: MouseEvent) {
     e.stopPropagation();
     // single click: select tooltip and disable inline editing
@@ -159,11 +171,6 @@ export class TooltipComponent implements OnInit {
     };
     // emit source id, connector id, and offset from tooltip top-left so parent can calculate absolute position
     this.startLink.emit({ id: this.tooltip.id, connectorId, offsetX: linkDotOffset.x, offsetY: linkDotOffset.y });
-  }
-
-  onRemove(e: MouseEvent) {
-    e.stopPropagation();
-    this.remove.emit(this.tooltip.id);
   }
 
   onInlineEdit(field: 'title' | 'text' | 'suggestion' | 'subText', e: Event, suggestionIndex?: number) {
