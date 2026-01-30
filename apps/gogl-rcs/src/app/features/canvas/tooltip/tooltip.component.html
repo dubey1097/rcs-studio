@@ -19,8 +19,8 @@
         <video *ngIf="isVideo(tooltip.mediaUrl)" [src]="tooltip.mediaUrl" controls></video>
         <object *ngIf="isPdf(tooltip.mediaUrl)" [data]="tooltip.mediaUrl" type="application/pdf" width="100%"
           height="100%">PDF preview not available</object>
-        <img *ngIf="isImage(tooltip.mediaUrl)" [src]="tooltip.mediaUrl" />
-        <button class="edit-media" title="Edit media" (click)="fileInputHidden.click()">📷</button>
+        <img *ngIf="isImage(tooltip.mediaUrl)" [src]="tooltip.mediaUrl"  />
+        <button class="edit-media" title="Edit media" (click)="fileInputHidden.click()" *ngIf="!previewMode">📷</button>
       </ng-container>
       <ng-template #placeholder>
         <div class="media-placeholder" (click)="fileInputHidden.click()">

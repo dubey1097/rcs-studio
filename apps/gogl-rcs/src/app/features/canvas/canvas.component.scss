@@ -405,7 +405,7 @@
 .preview-tray .tray-body {
   display: flex;
   justify-content: center;
-  overflow-y: auto;
+  overflow-y: hidden;
   max-height: calc(92vh - 56px);
   flex: 1;
   padding: 12px;
