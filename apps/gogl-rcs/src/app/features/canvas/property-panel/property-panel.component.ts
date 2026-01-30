@@ -12,7 +12,7 @@ function uid(): string {
   styleUrls: ['./property-panel.component.scss'],
 })
 export class PropertyPanelComponent implements OnChanges {
-  @Input() tooltip?: TooltipModel | null;
+  @Input() tooltip?: TooltipModel | undefined;
   // if set, the panel should show controls only for this specific field
   @Input() focusedField?: 'title' | 'text' | 'suggestion' | 'subText' | null;
   @Output() update = new EventEmitter<TooltipModel>();
@@ -21,6 +21,20 @@ export class PropertyPanelComponent implements OnChanges {
 
   form: FormGroup;
   suggestions: any[] = [];
+  showEmojiPicker = false;
+  emojis = [
+    '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '☺️', '😊',
+    '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😚',
+    '😙', '🤗', '😋', '😛', '😜', '🤪', '😝', '😑', '😐', '😶',
+    '😏', '😒', '🙁', '☹️', '🥺', '😌', '😔', '😪', '🤤', '😴',
+    '😷', '🤒', '🤕', '🤢', '🤮', '🤮', '🤮', '🤮', '👍', '👎',
+    '👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤌', '🤏', '✌️', '🤞',
+    '🫰', '🤟', '🤘', '🤙', '👊', '👏', '🙌', '👐', '🫲', '🤲',
+    '💪', '🦵', '🦶', '🦴', '❤️', '🧡', '💛', '💚', '💙', '💜',
+    '🖤', '🧠', '🧡', '💔', '💕', '💞', '💓', '💗', '💖', '💘',
+    '⭐', '🌟', '✨', '⚡', '🔥', '💥', '🎉', '🎊', '🎈', '🎁',
+    '🍕', '🍔', '🍟', '🌭', '🍿', '🥒', '🍗', '🍖', '🌮', '🌯'
+  ];
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({});
@@ -185,5 +199,19 @@ export class PropertyPanelComponent implements OnChanges {
 
   readFile(file: File) {
     // Upload is handled on the tooltip card now. Keep method stub for compatibility.
+  }
+
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  insertEmoji(emoji: string) {
+    const textControl = this.form.controls['text'];
+    if (textControl) {
+      const currentValue = textControl.value || '';
+      const newValue = currentValue + emoji;
+      textControl.setValue(newValue);
+    }
+    this.showEmojiPicker = false;
   }
 }

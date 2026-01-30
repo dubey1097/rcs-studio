@@ -50,6 +50,10 @@
   flex: 0 0 360px;
   box-sizing: border-box;
   overflow-y: auto;
+  z-index: 1200;
+  margin-right: 20px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
 }
 
 .hint {
